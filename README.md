@@ -32,7 +32,7 @@ This repository includes a Dockerfile that will automatically build and host the
 
 ```bash
 docker build -t grr-hmi .
-docker run -p 8080:80 grr-hmi # Will serve on https://localhost:8080/. Replace '8080:80' with '80:80' to serve on https://localhost/ instead.
+docker run -p 8080:80 grr-hmi # Will serve on http://localhost:8080/. Replace '8080:80' with '80:80' to serve on http://localhost/ instead.
 ```
 
 Alternatively, if you wish to use some other service to host the app, you will need NodeJS and Yarn. You can compile the app like so:
