@@ -1,8 +1,9 @@
 import rclpy
-from rclpy.node import Node
 import subprocess
+from rclpy.node import Node
 from std_msgs.msg import String
 from json import dumps
+
 CALLBACK_TIME = 5
 
 class NodeInfo(Node):
@@ -26,8 +27,13 @@ def get_node_info() -> str:
     """
     node_data = {} # Final return value
 
-    valid_titles = {'Publishers:': [], 'Subscribers:': [], 'Service Servers:': [],
-     'Service Clients:': [], 'Action Servers:': [], 'Action Clients:': []}  # Titles wanted with arrays to store topics
+    valid_titles = {'Publishers:': [], 
+                    'Subscribers:': [], 
+                    'Service Servers:': [],
+                    'Service Clients:': [], 
+                    'Action Servers:': [], 
+                    'Action Clients:': []}  
+    
     # invalid_topics = {'/node_info_publisher', '/rosout', '/parameter_events'} 
 
     try:
@@ -37,32 +43,8 @@ def get_node_info() -> str:
         for node in nodes_decode:
 
             node_info = subprocess.run(['ros2', 'node', 'info', node], stdout=subprocess.PIPE) # Gets info on current node
-            node_info_decode = node_info.stdout.decode('utf-8').strip().split('\n') # Decodes using charset and splits info
-            node_name = node_info_decode[0] # Node name
-
-            """
-            Example of ros2 node info:
-
-            /node_publisher
-            Subscribers:
-
-            Publishers:
-                /node_data: std_msgs/msg/String
-                /parameter_events: rcl_interfaces/msg/ParameterEvent
-                /rosout: rcl_interfaces/msg/Log
-            Service Servers:
-                /node_publisher/describe_parameters: rcl_interfaces/srv/DescribeParameters
-                /node_publisher/get_parameter_types: rcl_interfaces/srv/GetParameterTypes
-                /node_publisher/get_parameters: rcl_interfaces/srv/GetParameters
-                /node_publisher/list_parameters: rcl_interfaces/srv/ListParameters
-                /node_publisher/set_parameters: rcl_interfaces/srv/SetParameters
-                /node_publisher/set_parameters_atomically: rcl_interfaces/srv/SetParametersAtomically
-            Service Clients:
-
-            Action Servers:
-
-            Action Clients:
-            """
+            node_info_decode = node_info.stdout.decode('utf-8').strip().split('\n')
+            node_name = node_info_decode[0]
             
             current_array = None
             for line in node_info_decode:
@@ -70,22 +52,20 @@ def get_node_info() -> str:
                 if not line: # If line is empty
                     continue
                 
-                if current_array is None or line in valid_titles.keys(): # If there is no array selected or the line is a valid key
-                    array = valid_titles.get(line, None) 
-                    if array is not None:
-                        current_array = array 
+                if current_array is None or line in valid_titles.keys():
+                    current_array = valid_titles.get(line, None) 
                     continue
                 
-                current_topic = line.split(':') # Split each topic EX: (/topic: std_msgs/msg/String)
+                topic, topic_type = line.split(':', 1) # Split each topic EX: (/topic: std_msgs/msg/String)
 
-                # if current_topic[0] in invalid_topics:
+                # if topic in invalid_topics:
                 #     continue
             
-                current_array.append({'topic': current_topic[0], 'type': current_topic[1].strip()}) # If is valid, add to currently selected array
+                current_array.append({'topic': topic, 'type': topic_type.strip()}) # If is valid, add to currently selected array
             
-            node_data[node_name] = {title.lower().replace(' ', '_').removesuffix(':'): valid_titles[title] for title in valid_titles.keys()} # Add all valid_titles arrays to node_data using nodes name as key
+            node_data[node_name] = {title.lower().replace(' ', '_').removesuffix(':'): valid_titles[title] for title in valid_titles.keys()} # Add all valid_titles arrays to node_data using node_name as key
             valid_titles = {title: [] for title in valid_titles.keys()} # Clear all arrays before next node
-        return dumps(node_data)
+        return dumps(node_data) # Use dumps(node_data, indent=4) for better formatting
 
     except Exception as e:
         return dumps({"Error while parsing,": str(e)})
