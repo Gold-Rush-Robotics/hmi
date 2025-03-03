@@ -7,7 +7,7 @@ import Console from "./Console";
 import { Status } from "../types/status";
 
 function App() {
-  const [selectedNode, setSelectedNode] = useState<String | null>(null);
+  const [selectedNode, setSelectedNode] = useState<string | null>(null);
   const [status, setStatus] = useState<Status>(Status.Stopped);
 
   return (

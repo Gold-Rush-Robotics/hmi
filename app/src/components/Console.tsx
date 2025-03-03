@@ -1,8 +1,11 @@
-import { useEffect, useRef, useState } from "react";
+import { useContext, useEffect, useRef, useState } from "react";
 import { IconButton, Stack, Typography } from "@mui/joy";
 import type { Console } from "../types/console";
 import { Paper } from "@mui/material";
 import { Close } from "@mui/icons-material";
+import { WSHistoryContext } from "./Providers/ROSProvider";
+import { RosMessage } from "../types/rosProvider";
+import { format, formatDate } from "date-fns";
 
 function Console({ ...props }: Console) {
   const consoleTitle = props.selectedNode
@@ -10,26 +13,16 @@ function Console({ ...props }: Console) {
     : "Console";
   const visibility = props.selectedNode ? undefined : { visibility: "hidden" };
   const consoleOutputRef = useRef<HTMLDivElement>(null);
-  const [socketHistory, setSocketHistory] = useState<string[]>([]);
+  const rawSocketHistory = useContext(WSHistoryContext);
+  const filteredSocketHistory = rawSocketHistory[props.selectedNode || ""];
+  let socketHistory: RosMessage[] = [];
   const [autoScroll, setAutoScroll] = useState(true);
   const maxHistoryLength = 1000; // in lines
 
-  // update history when receiving new data
-  // useEffect(() => {
-  //   if (data === null) return;
-
-  //   setSocketHistory((prev: string[]) => {
-  //     const time = format(new Date(), "HH:mm:ss.SSS");
-  //     const topic = data.topic;
-  //     const body = data.msg.data;
-  //     const nextMsg = `[${time}] [${topic}]: ${body}`;
-  //     const newHistory = [...prev, nextMsg];
-  //     if (newHistory.length > maxHistoryLength) {
-  //       newHistory.splice(0, 1);
-  //     }
-  //     return newHistory;
-  //   });
-  // }, [data]);
+  for (const topic in filteredSocketHistory) {
+    socketHistory = [...socketHistory, ...filteredSocketHistory[topic]];
+  }
+  socketHistory.sort((a, b) => a.timestamp.getTime() - b.timestamp.getTime());
 
   // Console scroll stuff
   useEffect(() => {
@@ -67,7 +60,9 @@ function Console({ ...props }: Console) {
   }
 
   function renderConsoleText() {
-    let text = socketHistory.join("\n");
+    let text = socketHistory
+      .map((msg) => `[${format(msg.timestamp, "HH:mm:ss.SSS")}] ${msg.message}`)
+      .join("\n");
     if (text === "") text = "Waiting for messages...";
     if (socketHistory.length === maxHistoryLength) {
       text = `...history limited to ${maxHistoryLength} lines\n${text}`;
@@ -100,6 +95,7 @@ function Console({ ...props }: Console) {
           color: "#eee",
           p: 1,
           textAlign: "left",
+          overflow: "scroll",
         }}
       >
         <pre style={{ margin: 0, padding: 0 }}>{renderConsoleText()}</pre>

@@ -1,4 +1,4 @@
 export type Console = {
-  selectedNode: String | null;
+  selectedNode: string | null;
   clearSelectedNode: VoidFunction;
 };
