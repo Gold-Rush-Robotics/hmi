@@ -72,7 +72,7 @@ function Console({ ...props }: Console) {
           `[${format(msg.timestamp, "HH:mm:ss.SSS")}] [${msg.topic}] ${msg.message}`,
       )
       .join("\n");
-    if (text === "") text = "Waiting for messages...";
+    if (text === "") text = "No messages received yet :(";
     if (socketHistory.length === maxHistoryLength) {
       text = `...history limited to ${maxHistoryLength} lines\n${text}`;
     }
