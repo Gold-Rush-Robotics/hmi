@@ -1,6 +1,6 @@
 import { useContext, useEffect, useRef, useState } from "react";
 import { IconButton, Stack, Typography } from "@mui/joy";
-import type { Console } from "../types/console";
+import type { Console, RosConsoleMessage } from "../types/console";
 import { Paper } from "@mui/material";
 import { Close } from "@mui/icons-material";
 import { WSHistoryContext } from "./Providers/ROSProvider";
@@ -15,12 +15,18 @@ function Console({ ...props }: Console) {
   const consoleOutputRef = useRef<HTMLDivElement>(null);
   const rawSocketHistory = useContext(WSHistoryContext);
   const filteredSocketHistory = rawSocketHistory[props.selectedNode || ""];
-  let socketHistory: RosMessage[] = [];
+  let socketHistory: RosConsoleMessage[] = [];
   const [autoScroll, setAutoScroll] = useState(true);
   const maxHistoryLength = 1000; // in lines
 
   for (const topic in filteredSocketHistory) {
-    socketHistory = [...socketHistory, ...filteredSocketHistory[topic]];
+    const topicHistory = filteredSocketHistory[topic].map((message) => {
+      return {
+        ...message,
+        topic,
+      };
+    });
+    socketHistory = [...socketHistory, ...topicHistory];
   }
   socketHistory.sort((a, b) => a.timestamp.getTime() - b.timestamp.getTime());
 
@@ -61,7 +67,10 @@ function Console({ ...props }: Console) {
 
   function renderConsoleText() {
     let text = socketHistory
-      .map((msg) => `[${format(msg.timestamp, "HH:mm:ss.SSS")}] ${msg.message}`)
+      .map(
+        (msg) =>
+          `[${format(msg.timestamp, "HH:mm:ss.SSS")}] [${msg.topic}] ${msg.message}`,
+      )
       .join("\n");
     if (text === "") text = "Waiting for messages...";
     if (socketHistory.length === maxHistoryLength) {
