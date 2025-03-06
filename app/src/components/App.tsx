@@ -3,7 +3,7 @@ import "/src/css/App.css";
 import NavBar from "./NavBar/NavBar";
 import { Box, Grid } from "@mui/joy";
 import NodeManager from "./NodeManager/NodeManager";
-import Console from "./Console";
+import Console from "./Console/Console";
 import { Status } from "../types/status";
 
 function App() {
