@@ -5,6 +5,12 @@ import { isRunning } from "../../util/status";
 import { PlayArrow } from "@mui/icons-material";
 import { useEffect, useState } from "react";
 
+/**
+ * Sends a message to ROS when clicked if the robot is not already in a running state.
+ *
+ * @param props.status The current status of the robot.
+ * @param props.setStatus A function to update the state if the status.
+ */
 function StartButton({ ...props }: StartButton) {
   const [wait, setWait] = useState(-1); // until proper implementation
   const [disabled, setDisabled] = useState(isRunning(props.status));
@@ -13,6 +19,9 @@ function StartButton({ ...props }: StartButton) {
     setWait(5); // until proper implementation
   }
 
+  /**
+   * Temporary delay until this is handled in ROS.
+   */
   useEffect(() => {
     if (wait === 0) {
       if (props.status == Status.Stopped) {

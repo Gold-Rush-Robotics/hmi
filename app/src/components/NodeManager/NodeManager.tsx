@@ -5,6 +5,13 @@ import { Status } from "../../types/status";
 import { ReactElement, useContext } from "react";
 import { DiscoveredNodesContext } from "../Providers/ROSProvider";
 
+/**
+ * A component that lists all the nodes as detected from ROS, with an icon for their
+ * status. Updates the selected node when a node is clicked.
+ *
+ * @param props.selectedNode The currently selected node.
+ * @param props.setSelectedNode Used to update the selected node state.
+ */
 function NodeManager({ ...props }: NodeManager) {
   const nodeData = useContext(DiscoveredNodesContext);
 

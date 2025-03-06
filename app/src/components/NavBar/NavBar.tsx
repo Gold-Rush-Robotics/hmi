@@ -4,6 +4,13 @@ import StartButton from "./StartButton";
 import StatusSummary from "./StatusSummary";
 import { Avatar, Box, Sheet, Typography } from "@mui/joy";
 
+/**
+ * The upper navigation bar of the app.
+ *
+ * @param props.status The current status of the robot.
+ * @param props.setStatus A function to update the state if the status.
+ * @returns
+ */
 function NavBar({ ...props }: NavBar) {
   return (
     <Sheet

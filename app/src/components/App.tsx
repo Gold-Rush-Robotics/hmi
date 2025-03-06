@@ -6,6 +6,9 @@ import NodeManager from "./NodeManager/NodeManager";
 import Console from "./Console/Console";
 import { Status } from "../types/status";
 
+/**
+ * The entry point of the program.
+ */
 function App() {
   const [selectedNode, setSelectedNode] = useState<string | null>(null);
   const [status, setStatus] = useState<Status>(Status.Stopped);

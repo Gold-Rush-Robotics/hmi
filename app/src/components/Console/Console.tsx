@@ -8,6 +8,12 @@ import { RosMessage } from "../../types/rosProvider";
 import { format, formatDate } from "date-fns";
 import ConsoleFilters from "./ConsoleFilters";
 
+/**
+ * Console component for displaying ROS messages.
+ *
+ * @param props.selectedNode - The selected node to display messages from.
+ * @param props.clearSelectedNode - Function to clear the selected node.
+ */
 function Console({ ...props }: Console) {
   const consoleTitle = props.selectedNode
     ? `Messages from "${props.selectedNode}"`
@@ -84,6 +90,7 @@ function Console({ ...props }: Console) {
   /**
    * Maps the messages from `socketHistory` into a preformatted string that can be used
    * in the console.
+   *
    * @returns Preformatted text of the entire console history.
    */
   function renderConsoleText() {

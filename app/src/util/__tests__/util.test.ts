@@ -1,7 +1,7 @@
-// deepCombineObjects.test.ts
 import { deepCombineObjects } from "../util"; // Adjust path as needed
 import { describe, expect, it } from "vitest";
 
+// Written by ChatGPT :)
 describe("deepCombineObjects", () => {
   it("should combine two simple objects", () => {
     const obj1 = { a: 1, b: 2 };

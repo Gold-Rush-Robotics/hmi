@@ -2,6 +2,11 @@ import { Avatar, IconButton } from "@mui/joy";
 import { Status } from "../../types/status";
 import type { EStop } from "../../types/navbar";
 
+/**
+ * Emergency Stop button to immediately send a message to ROS and stop the robot.
+ *
+ * @param props.setStatus A function to update the state if the status.
+ */
 function EStop({ ...props }: EStop) {
   function onClick() {
     console.log(props.setStatus(Status.Stopped));

@@ -3,11 +3,18 @@ import type { ConsoleFilters } from "../../types/console";
 import { useState } from "react";
 import { Filter, Filter1, FilterList } from "@mui/icons-material";
 
+/**
+ * ConsoleFilters component for displaying and managing topic filters.
+ *
+ * @param props.topicMap - A map of topics and their enabled/disabled state.
+ * @param props.setDisabledTopics - Function to set the disabled topics.
+ */
 function ConsoleFilters({ ...props }: ConsoleFilters) {
   const [showFilters, setShowFilters] = useState(true);
 
   /**
    * Creates a list of chips for the topic filters.
+   *
    * @returns A list of chips for each topic, that you can click to enable/disable.
    */
   function renderFilterChips() {
@@ -28,6 +35,7 @@ function ConsoleFilters({ ...props }: ConsoleFilters) {
 
   /**
    * Creates a styled chip for the topic that can be clicked to toggle the topic enabled state.
+   *
    * @param topic The topic corresponding to the chip
    * @param enabled Whether the topic is enabled or not (true = enabled)
    * @returns A `Chip` component with proper styling and click handlers.
@@ -56,12 +64,22 @@ function ConsoleFilters({ ...props }: ConsoleFilters) {
     );
   }
 
+  /**
+   * Disables a topic by adding it to the list of disabled topics.
+   *
+   * @param topic - The topic to disable.
+   */
   function disableTopic(topic: string) {
     props.setDisabledTopics((prev) => {
       return [...prev, topic];
     });
   }
 
+  /**
+   * Enables a topic by removing it from the list of disabled topics.
+   *
+   * @param topic - The topic to enable.
+   */
   function enableTopic(topic: string) {
     props.setDisabledTopics((prev) => {
       let update = [...prev];
@@ -70,8 +88,12 @@ function ConsoleFilters({ ...props }: ConsoleFilters) {
     });
   }
 
+  /**
+   * Renders a toggle button to show or hide the filters.
+   *
+   * @returns A `ToggleButton` component.
+   */
   function renderToggleShowButton() {
-    const text = showFilters ? "Hide Filters" : "Show Filters";
     return (
       <ToggleButton
         sx={{ borderRadius: 10, scale: 0.85 }}

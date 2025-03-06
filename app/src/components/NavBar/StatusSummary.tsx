@@ -2,6 +2,11 @@ import { Box } from "@mui/joy";
 import type { StatusSummary } from "../../types/navbar";
 import StatusIcon from "../StatusIcon";
 
+/**
+ * This is used in the NavBar as a summary of the entire state of ROS.
+ *
+ * @param props.status The status to show.
+ */
 function StatusSummary({ ...props }: StatusSummary) {
   return (
     <Box

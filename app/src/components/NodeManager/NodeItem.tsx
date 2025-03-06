@@ -8,6 +8,14 @@ import type { NodeItem } from "../../types/nodeManager";
 import StatusIcon from "../StatusIcon";
 import { SxProps } from "@mui/material";
 
+/**
+ * NodeItem component for displaying a node in a list.
+ *
+ * @param props.name - The name of the node.
+ * @param props.status - The status of the node.
+ * @param props.selection - The currently selected node name.
+ * @param props.setSelectedNode - Function to set the selected node.
+ */
 function NodeItem({ ...props }: NodeItem) {
   const selected = props.selection === props.name;
   let selectedStatusBorder: SxProps = {};

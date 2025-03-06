@@ -13,6 +13,9 @@ import { deepCombineObjects } from "../../util/util";
 export const WSHistoryContext = createContext<WSHistory>({});
 export const DiscoveredNodesContext = createContext<DiscoveredNodes>({});
 
+/**
+ * A global state provider for subscribing to ROS topics and keeping track of received data.
+ */
 function ROSProvider({ ...props }) {
   const wsRef = useRef<WebSocket | null>(null);
   const [wsHistory, setWSHistory] = useState<WSHistory>({});
@@ -86,6 +89,7 @@ function ROSProvider({ ...props }) {
 
   /**
    * Parses a message received from the ROS Websocket.
+   *
    * @param event The message event received from the ROS WebSocket.
    */
   function handleWsMessage(event: MessageEvent, timestamp: Date) {
@@ -128,6 +132,7 @@ function ROSProvider({ ...props }) {
 
   /**
    * Updates nodes based on nodes and topics received from /node_info_publisher
+   *
    * @param update The message from /node_info_publisher
    */
   function checkNodeUpdates(update: RosMessage) {
@@ -217,6 +222,7 @@ function ROSProvider({ ...props }) {
 
   /**
    * Subscribes to the specified topic.
+   *
    * @param topic The name of a topic to subscribe to (e.g. "/my_topic").
    * @param type The type of the topic being subscribed to (e.g. "std_msgs/msg/String").
    */
@@ -236,6 +242,7 @@ function ROSProvider({ ...props }) {
    * Uses linear search to find the node belonging to a topic. It is possible that if multiple topics
    * have the same name, this could return the same one for both, but I think we have bigger issues if
    * we have multiple topics sharing a name.
+   *
    * @param topic The topic to find
    * @returns The node containing the topic
    */
