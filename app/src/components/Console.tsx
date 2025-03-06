@@ -67,10 +67,9 @@ function Console({ ...props }: Console) {
 
   function renderConsoleText() {
     let text = socketHistory
-      .map(
-        (msg) =>
-          `[${format(msg.timestamp, "HH:mm:ss.SSS")}] [${msg.topic}] ${msg.message}`,
-      )
+      .map((msg) => {
+        return `[${format(msg.timestamp, "HH:mm:ss.SSS")}] [${msg.topic}] ${msg.message}`;
+      })
       .join("\n");
     if (text === "") text = "No messages received yet :(";
     if (socketHistory.length === maxHistoryLength) {

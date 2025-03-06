@@ -1,7 +1,5 @@
-import { cleanup, render, screen } from "@testing-library/react";
-import { afterEach, describe, expect, it, vi } from "vitest";
-import userEvent from "@testing-library/user-event";
-import NodeManager from "../NodeManager";
+import { cleanup } from "@testing-library/react";
+import { afterEach, describe, expect, it } from "vitest";
 
 describe("NodeManager", () => {
   // Without this, every render() from previous tests stays in the environment

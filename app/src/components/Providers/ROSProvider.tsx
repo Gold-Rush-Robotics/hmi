@@ -94,8 +94,10 @@ function ROSProvider({ ...props }) {
     let data: RosResponse;
     try {
       data = JSON.parse(event.data) as RosResponse;
-    } catch (error) {
-      throw new Error(`Error parsing data: ${error}. Data: ${event.data}`);
+    } catch (e) {
+      throw new Error(
+        `Error parsing data. Data: '${JSON.stringify(event.data)}'`,
+      );
     }
 
     const node = findTopicParent(data.topic);
@@ -132,8 +134,10 @@ function ROSProvider({ ...props }) {
     let data: RosNodeInfo;
     try {
       data = JSON.parse(update.message.toString());
-    } catch (error) {
-      throw new Error(`Error parsing data: ${error}. Data: ${update.message}`);
+    } catch (e) {
+      throw new Error(
+        `Error parsing data. Data: '${JSON.stringify(update.message)}'`,
+      );
     }
 
     let newDiscovered: DiscoveredNodes = {};

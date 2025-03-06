@@ -1,8 +1,7 @@
 import { cleanup, render, screen } from "@testing-library/react";
-import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
+import { afterEach, describe, expect, it, vi } from "vitest";
 import NodeItem from "../NodeItem";
 import { Status } from "../../../types/status";
-import { SetStateAction } from "react";
 import userEvent from "@testing-library/user-event";
 
 describe("NodeItem", () => {
