@@ -14,8 +14,11 @@ import { ThemeContext } from "@emotion/react";
  */
 function StartButton({ ...props }: StartButton) {
   const [wait, setWait] = useState(-1); // until proper implementation
-  const [disabled, setDisabled] = useState(isRunning(props.status));
+  const [disabled, setDisabled] = useState(
+    isRunning(props.status) || props.status === Status.Unknown,
+  );
   function onClick() {
+    props.setStatus(Status.Loading);
     setDisabled(true);
     setWait(5); // until proper implementation
   }
@@ -25,14 +28,14 @@ function StartButton({ ...props }: StartButton) {
    */
   useEffect(() => {
     if (wait === 0) {
-      if (props.status == Status.Stopped) {
+      if (props.status === Status.Loading) {
         props.setStatus(Status.OK);
         setWait(-1);
       }
       return;
     }
     if (wait < 0) {
-      setDisabled(isRunning(props.status));
+      setDisabled(isRunning(props.status) || props.status === Status.Unknown);
       return;
     }
 
@@ -43,7 +46,9 @@ function StartButton({ ...props }: StartButton) {
 
   return (
     <IconButton
-      {...(wait !== -1 ? { loading: true } : undefined)}
+      {...(wait > -1 || props.status === Status.Unknown
+        ? { loading: true }
+        : undefined)}
       onClick={onClick}
       disabled={disabled}
       sx={{

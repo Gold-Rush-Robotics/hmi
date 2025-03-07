@@ -1,21 +1,22 @@
-import { useState } from "react";
+import { useContext, useState } from "react";
 import "/src/css/App.css";
 import NavBar from "./NavBar/NavBar";
 import { Box, Grid2 as Grid } from "@mui/material";
 import NodeManager from "./NodeManager/NodeManager";
 import Console from "./Console/Console";
 import { Status } from "../types/status";
+import { GlobalStatusContext } from "./Providers/ROSProvider";
 
 /**
  * The entry point of the program.
  */
 function App() {
   const [selectedNode, setSelectedNode] = useState<string | null>(null);
-  const [status, setStatus] = useState<Status>(Status.Stopped);
+  const { globalStatus, setGlobalStatus } = useContext(GlobalStatusContext);
 
   return (
     <Box height="100%">
-      <NavBar status={status} setStatus={setStatus} />
+      <NavBar status={globalStatus} setStatus={setGlobalStatus} />
       <Grid container spacing={2}>
         <Grid size={3}>
           <NodeManager

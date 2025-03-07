@@ -1,3 +1,6 @@
+import { Dispatch, SetStateAction } from "react";
+import { Status } from "./status";
+
 export type WSHistory = {
   [key: string]: NodeHistory;
 };
@@ -53,4 +56,9 @@ export type RosNodeConnections = {
 export type RosNodeConnection = {
   topic: string;
   type: string;
+};
+
+export type GlobalStatusContextType = {
+  globalStatus: Status;
+  setGlobalStatus: Dispatch<SetStateAction<Status>>;
 };

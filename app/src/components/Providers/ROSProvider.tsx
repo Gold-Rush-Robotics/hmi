@@ -2,6 +2,7 @@ import { createContext, use, useEffect, useRef, useState } from "react";
 import type {
   DiscoveredNodes,
   DiscoveredTopic,
+  GlobalStatusContextType,
   RosMessage,
   RosNodeInfo,
   RosResponse,
@@ -9,9 +10,14 @@ import type {
   WSHistory,
 } from "../../types/rosProvider";
 import { deepCombineObjects } from "../../util/util";
+import { Status } from "../../types/status";
 
 export const WSHistoryContext = createContext<WSHistory>({});
 export const DiscoveredNodesContext = createContext<DiscoveredNodes>({});
+export const GlobalStatusContext = createContext<GlobalStatusContextType>({
+  globalStatus: Status.Unknown,
+  setGlobalStatus: () => {},
+});
 
 /**
  * A global state provider for subscribing to ROS topics and keeping track of received data.
@@ -19,6 +25,7 @@ export const DiscoveredNodesContext = createContext<DiscoveredNodes>({});
 function ROSProvider({ ...props }) {
   const wsRef = useRef<WebSocket | null>(null);
   const [wsHistory, setWSHistory] = useState<WSHistory>({});
+  const [globalStatus, setGlobalStatus] = useState<Status>(Status.Unknown);
   const [discoveredNodes, setDiscoveredNodes] = useState<DiscoveredNodes>({
     "/node_info": {
       publishers: [
@@ -136,6 +143,8 @@ function ROSProvider({ ...props }) {
    * @param update The message from /node_info_publisher
    */
   function checkNodeUpdates(update: RosMessage) {
+    if (globalStatus === Status.Unknown) setGlobalStatus(Status.Stopped);
+
     let data: RosNodeInfo;
     try {
       data = JSON.parse(update.message.toString());
@@ -259,11 +268,13 @@ function ROSProvider({ ...props }) {
   }
 
   return (
-    <WSHistoryContext.Provider value={wsHistory}>
-      <DiscoveredNodesContext.Provider value={discoveredNodes}>
-        {props.children}
-      </DiscoveredNodesContext.Provider>
-    </WSHistoryContext.Provider>
+    <GlobalStatusContext value={{ globalStatus, setGlobalStatus }}>
+      <WSHistoryContext.Provider value={wsHistory}>
+        <DiscoveredNodesContext.Provider value={discoveredNodes}>
+          {props.children}
+        </DiscoveredNodesContext.Provider>
+      </WSHistoryContext.Provider>
+    </GlobalStatusContext>
   );
 }
 
