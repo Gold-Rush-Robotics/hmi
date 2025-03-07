@@ -24,6 +24,10 @@ dist-ssr
 *.sln
 *.sw?
 
+# Environment Variables
+*.env*
+!*.env.example
+
 # Vite
 .vite
 

@@ -1,4 +1,4 @@
-import { createContext, use, useEffect, useRef, useState } from "react";
+import { createContext, useEffect, useRef, useState } from "react";
 import type {
   DiscoveredNodes,
   DiscoveredTopic,
@@ -23,6 +23,7 @@ export const GlobalStatusContext = createContext<GlobalStatusContextType>({
  * A global state provider for subscribing to ROS topics and keeping track of received data.
  */
 function ROSProvider({ ...props }) {
+  const rosIP: string = import.meta.env.VITE_ROS_IP || "ws://127.0.0.1:9090";
   const wsRef = useRef<WebSocket | null>(null);
   const [wsHistory, setWSHistory] = useState<WSHistory>({});
   const [globalStatus, setGlobalStatus] = useState<Status>(Status.Unknown);
@@ -51,8 +52,8 @@ function ROSProvider({ ...props }) {
    */
   useEffect(() => {
     if (wsRef.current === null) {
-      wsRef.current = new WebSocket("ws://127.0.0.1:9090");
-      console.log("Initializing new WebSocket connection...");
+      wsRef.current = new WebSocket(rosIP);
+      console.log(`Initializing new WebSocket connection to '${rosIP}'...`);
     }
     const ws = wsRef.current;
 

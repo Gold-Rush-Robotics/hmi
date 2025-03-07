@@ -4,7 +4,6 @@ import NavBar from "./NavBar/NavBar";
 import { Box, Grid2 as Grid } from "@mui/material";
 import NodeManager from "./NodeManager/NodeManager";
 import Console from "./Console/Console";
-import { Status } from "../types/status";
 import { GlobalStatusContext } from "./Providers/ROSProvider";
 
 /**
