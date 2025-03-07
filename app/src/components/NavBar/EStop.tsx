@@ -1,6 +1,7 @@
-import { Avatar, IconButton } from "@mui/material";
+import { Avatar, Button, IconButton, Stack, Typography } from "@mui/material";
 import { Status } from "../../types/status";
 import type { EStop } from "../../types/navbar";
+import { SpaceBar } from "@mui/icons-material";
 
 /**
  * Emergency Stop button to immediately send a message to ROS and stop the robot.
@@ -13,17 +14,24 @@ function EStop({ ...props }: EStop) {
   }
 
   return (
-    <IconButton
+    <Button
       onClick={onClick}
+      variant="contained"
       sx={{
-        padding: 0,
+        flex: 1,
+        height: "40px",
         borderRadius: 25,
-        borderWidth: "2px",
-        borderStyle: "inset",
+        backgroundColor: "#fee415",
+        color: "red",
+        p: 0,
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "space-between",
       }}
     >
+      <Typography sx={{ fontWeight: "bold", m: 2 }}>EMERGENCY STOP</Typography>
       <Avatar src="/estop.png">STOP</Avatar>
-    </IconButton>
+    </Button>
   );
 }
 
