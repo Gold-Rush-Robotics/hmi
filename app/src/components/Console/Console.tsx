@@ -1,7 +1,6 @@
 import { SetStateAction, useContext, useEffect, useRef, useState } from "react";
-import { IconButton, Stack, Typography } from "@mui/joy";
 import type { Console, RosConsoleMessage } from "../../types/console";
-import { Box, Paper } from "@mui/material";
+import { Box, IconButton, Paper, Stack, Typography } from "@mui/material";
 import { Close } from "@mui/icons-material";
 import { WSHistoryContext } from "../Providers/ROSProvider";
 import { RosMessage } from "../../types/rosProvider";

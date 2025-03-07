@@ -1,9 +1,10 @@
-import { IconButton } from "@mui/joy";
+import { IconButton, SxProps } from "@mui/material";
 import type { StartButton } from "../../types/navbar";
 import { Status } from "../../types/status";
 import { isRunning } from "../../util/status";
-import { PlayArrow } from "@mui/icons-material";
+import { Check, PlayArrow } from "@mui/icons-material";
 import { useEffect, useState } from "react";
+import { ThemeContext } from "@emotion/react";
 
 /**
  * Sends a message to ROS when clicked if the robot is not already in a running state.
@@ -42,13 +43,19 @@ function StartButton({ ...props }: StartButton) {
 
   return (
     <IconButton
-      variant="solid"
-      color="primary"
+      {...(wait !== -1 ? { loading: true } : undefined)}
       onClick={onClick}
       disabled={disabled}
-      sx={{ borderRadius: 50, ml: 2 }}
+      sx={{
+        ml: 2,
+        bgcolor: "primary.main", // Background color (using theme primary color)
+        color: "primary.contrastText", // Text/icon color that contrasts with background
+        "&:hover": {
+          bgcolor: "primary.dark", // Darker shade on hover
+        },
+      }}
     >
-      <PlayArrow />
+      {disabled ? <Check /> : <PlayArrow />}
     </IconButton>
   );
 }

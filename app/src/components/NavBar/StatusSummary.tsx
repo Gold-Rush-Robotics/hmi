@@ -1,4 +1,4 @@
-import { Box } from "@mui/joy";
+import { Box } from "@mui/material";
 import type { StatusSummary } from "../../types/navbar";
 import StatusIcon from "../StatusIcon";
 

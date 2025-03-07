@@ -1,4 +1,4 @@
-import { Box, Stack, Typography } from "@mui/joy";
+import { Stack, Typography } from "@mui/material";
 import type { NodeManager } from "../../types/nodeManager";
 import NodeItem from "./NodeItem";
 import { Status } from "../../types/status";

@@ -2,7 +2,7 @@ import type { NavBar } from "../../types/navbar";
 import EStop from "./EStop";
 import StartButton from "./StartButton";
 import StatusSummary from "./StatusSummary";
-import { Avatar, Box, Sheet, Typography } from "@mui/joy";
+import { Avatar, Box, Paper, Typography } from "@mui/material";
 
 /**
  * The upper navigation bar of the app.
@@ -13,7 +13,7 @@ import { Avatar, Box, Sheet, Typography } from "@mui/joy";
  */
 function NavBar({ ...props }: NavBar) {
   return (
-    <Sheet
+    <Paper
       sx={{
         display: "grid",
         gridTemplateColumns: "auto auto", // Two columns: left and right
@@ -25,7 +25,7 @@ function NavBar({ ...props }: NavBar) {
     >
       <Box sx={{ display: "flex", alignItems: "center" }}>
         <Avatar src="/logo192.png" sx={{ mr: 2 }} /> {/* Logo */}
-        <Typography level="h4" sx={{ mr: 0.5 }}>
+        <Typography variant="h4" sx={{ mr: 0.5 }}>
           GRR-inator
         </Typography>
         <Avatar
@@ -50,7 +50,7 @@ function NavBar({ ...props }: NavBar) {
         <StatusSummary status={props.status} />
         <StartButton status={props.status} setStatus={props.setStatus} />
       </Box>
-    </Sheet>
+    </Paper>
   );
 }
 

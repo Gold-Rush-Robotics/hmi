@@ -1,4 +1,4 @@
-import { Avatar, IconButton } from "@mui/joy";
+import { Avatar, IconButton } from "@mui/material";
 import { Status } from "../../types/status";
 import type { EStop } from "../../types/navbar";
 
