@@ -62,3 +62,10 @@ export type GlobalStatusContextType = {
   globalStatus: Status;
   setGlobalStatus: Dispatch<SetStateAction<Status>>;
 };
+
+export type RosCommunicationContext = {
+  sendRaw: (message: object) => void;
+  advertise: (topic: string, type: string) => void;
+  publish: (topic: string, msg: object | string) => void;
+  subscribe: (topic: string, type: RosType) => void;
+};

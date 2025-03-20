@@ -3,6 +3,7 @@ import type {
   DiscoveredNodes,
   DiscoveredTopic,
   GlobalStatusContextType,
+  RosCommunicationContext,
   RosMessage,
   RosNodeInfo,
   RosResponse,
@@ -17,6 +18,12 @@ export const DiscoveredNodesContext = createContext<DiscoveredNodes>({});
 export const GlobalStatusContext = createContext<GlobalStatusContextType>({
   globalStatus: Status.Unknown,
   setGlobalStatus: () => {},
+});
+export const ROSCommunicationContext = createContext<RosCommunicationContext>({
+  sendRaw: () => {},
+  advertise: () => {},
+  publish: () => {},
+  subscribe: () => {},
 });
 
 /**
@@ -42,13 +49,19 @@ function ROSProvider({ ...props }) {
       service_servers: [],
     },
   });
+  const publishers = [
+    {
+      topic: "/hmi_start_stop",
+      type: "std_msgs/msg/String",
+    },
+  ];
   const [lastReceived, setLastReceived] = useState(new Date());
   const timeoutPollRate = 10000; // milliseconds; we should be receiving data from ROS every ~5 seconds at minimum
 
   /**
    * Handles the main connection for the WebSocket (connections, errors, etc.)
    * Note that this has no deps array - if there are deps then it will be running
-   * the function from the old state until one of them updates.
+   * handleWsMessage() from the old state until one of the deps update.
    */
   useEffect(() => {
     if (wsRef.current === null) {
@@ -61,6 +74,9 @@ function ROSProvider({ ...props }) {
       console.log("Connected to ROS!");
       setLastReceived(new Date()); // to avoid timeout
       subscribe("/node_info_publisher", "std_msgs/msg/String");
+      for (const publisher of publishers) {
+        advertise(publisher.topic, publisher.type);
+      }
     };
 
     ws.onerror = () => {
@@ -237,15 +253,56 @@ function ROSProvider({ ...props }) {
    * @param type The type of the topic being subscribed to (e.g. "std_msgs/msg/String").
    */
   function subscribe(topic: string, type: RosType) {
-    const socket = wsRef.current;
-    if (!socket) throw new Error(`Socket is null! Can't subscribe to ${topic}`);
-
     const message = {
       op: "subscribe",
       topic,
       type,
     };
+    sendRaw(message);
+  }
+
+  /**
+   * Sends a raw message to ROS.
+   *
+   * @param message The message object to stringify and send to ROS.
+   */
+  function sendRaw(message: object) {
+    const socket = wsRef.current;
+    if (!socket)
+      throw new Error(`Socket is null! Unable to send message:\n${message}.`);
+
     socket.send(JSON.stringify(message));
+  }
+
+  /**
+   * Sends a message to ROS that we are or will be publishing a topic.
+   *
+   * @param topic The name of the topic to advertise.
+   * @param type The type of the advertized topic.
+   */
+  function advertise(topic: string, type: string) {
+    const message = {
+      op: "advertise",
+      topic,
+      type,
+    };
+    sendRaw(message);
+  }
+
+  /**
+   * Publishes a message to ROS to the specified topic. Note that the topic
+   * message must match the topic type.
+   *
+   * @param topic The name of the topic to send a message to.
+   * @param msg The message to send.
+   */
+  function publish(topic: string, msg: object | string) {
+    const message = {
+      op: "publish",
+      topic,
+      msg,
+    };
+    sendRaw(message);
   }
 
   /**
@@ -272,7 +329,11 @@ function ROSProvider({ ...props }) {
     <GlobalStatusContext value={{ globalStatus, setGlobalStatus }}>
       <WSHistoryContext.Provider value={wsHistory}>
         <DiscoveredNodesContext.Provider value={discoveredNodes}>
-          {props.children}
+          <ROSCommunicationContext.Provider
+            value={{ sendRaw, advertise, publish, subscribe }}
+          >
+            {props.children}
+          </ROSCommunicationContext.Provider>
         </DiscoveredNodesContext.Provider>
       </WSHistoryContext.Provider>
     </GlobalStatusContext>

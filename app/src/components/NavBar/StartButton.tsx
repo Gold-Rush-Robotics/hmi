@@ -1,10 +1,10 @@
-import { IconButton, SxProps } from "@mui/material";
+import { IconButton } from "@mui/material";
 import type { StartButton } from "../../types/navbar";
 import { Status } from "../../types/status";
 import { isRunning } from "../../util/status";
 import { Check, PlayArrow } from "@mui/icons-material";
-import { useEffect, useState } from "react";
-import { ThemeContext } from "@emotion/react";
+import { useContext, useEffect, useState } from "react";
+import { ROSCommunicationContext } from "../Providers/ROSProvider";
 
 /**
  * Sends a message to ROS when clicked if the robot is not already in a running state.
@@ -13,12 +13,14 @@ import { ThemeContext } from "@emotion/react";
  * @param props.setStatus A function to update the state if the status.
  */
 function StartButton({ ...props }: StartButton) {
+  const send = useContext(ROSCommunicationContext);
   const [wait, setWait] = useState(-1); // until proper implementation
   const [disabled, setDisabled] = useState(
     isRunning(props.status) || props.status === Status.Unknown,
   );
   function onClick() {
     props.setStatus(Status.Loading);
+    send.publish("/hmi_start_stop", "start");
     setDisabled(true);
     setWait(5); // until proper implementation
   }

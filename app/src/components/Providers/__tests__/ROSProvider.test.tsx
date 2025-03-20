@@ -1,11 +1,15 @@
-import { getByTestId, render, waitFor, within } from "@testing-library/react";
+import {
+  act,
+  cleanup,
+  getByTestId,
+  render,
+  waitFor,
+  within,
+} from "@testing-library/react";
 import WS from "jest-websocket-mock";
-import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
-import ROSProvider, {
-  DiscoveredNodesContext,
-  WSHistoryContext,
-} from "../ROSProvider";
-import { useContext } from "react";
+import { afterEach, beforeEach, describe, expect, it, test, vi } from "vitest";
+import ROSProvider from "../ROSProvider";
+import { ExposeROSProvider } from "./ExposeROSProvider";
 
 describe("ROSProvider", () => {
   const mockNodeMsgData = {
@@ -39,6 +43,7 @@ describe("ROSProvider", () => {
 
   // Without this, every render() from previous tests stays in the environment
   afterEach(() => {
+    cleanup();
     WS.clean();
   });
 
@@ -63,7 +68,7 @@ describe("ROSProvider", () => {
   it("subscribes to stuff the WebSocket tells it to, and adds messages from known nodes to context properly", async () => {
     const { container } = render(
       <ROSProvider>
-        <ExposeState />
+        <ExposeROSProvider />
       </ROSProvider>,
     );
     await mockServer.connected;
@@ -94,7 +99,7 @@ describe("ROSProvider", () => {
   it("adds topics to '/unknown' node when not associated with a node", async () => {
     const { container } = render(
       <ROSProvider>
-        <ExposeState />
+        <ExposeROSProvider />
       </ROSProvider>,
     );
     await mockServer.connected;
@@ -117,7 +122,7 @@ describe("ROSProvider", () => {
   it("throws an error when an invalid message is received", async () => {
     render(
       <ROSProvider>
-        <ExposeState />
+        <ExposeROSProvider />
       </ROSProvider>,
     );
     await mockServer.connected;
@@ -147,7 +152,7 @@ describe("ROSProvider", () => {
   it("doesn't overwrite previous nodes when nodes aren't shown by '/node_info_publisher' anymore", async () => {
     const { container } = render(
       <ROSProvider>
-        <ExposeState />
+        <ExposeROSProvider />
       </ROSProvider>,
     );
     await mockServer.connected;
@@ -165,23 +170,106 @@ describe("ROSProvider", () => {
     expect("/node_info" in discoveredNodes);
     expect("/node_info_publisher" in discoveredNodes["/node_info"]);
   });
+
+  it("sends whatever is sent in sendRaw", async () => {
+    const { getByTestId } = render(
+      <ROSProvider>
+        <ExposeROSProvider />
+      </ROSProvider>,
+    );
+    await mockServer.connected;
+
+    act(() => {
+      getByTestId("send-raw").click();
+    });
+
+    await vi.waitFor(() => {
+      expect(mockServer.messages.length).toBeGreaterThan(0);
+    });
+
+    expect(mockServer.messages).toContain(JSON.stringify({ test: "data" }));
+  });
+
+  it("correctly parses and sends advertisements", async () => {
+    const { getByTestId } = render(
+      <ROSProvider>
+        <ExposeROSProvider />
+      </ROSProvider>,
+    );
+    await mockServer.connected;
+
+    act(() => {
+      getByTestId("advertise").click();
+    });
+
+    await vi.waitFor(() => {
+      expect(mockServer.messages.length).toBeGreaterThan(0);
+    });
+
+    expect(mockServer.messages).toContain(
+      JSON.stringify({
+        op: "advertise",
+        topic: "/advertise_topic",
+        type: "std_msgs/msg/String",
+      }),
+    );
+  });
+
+  it("correctly parses and sends published messages", async () => {
+    const { getByTestId } = render(
+      <ROSProvider>
+        <ExposeROSProvider />
+      </ROSProvider>,
+    );
+    await mockServer.connected;
+
+    act(() => {
+      getByTestId("publish").click();
+    });
+
+    await vi.waitFor(() => {
+      expect(mockServer.messages.length).toBeGreaterThan(0);
+    });
+
+    expect(mockServer.messages).toContain(
+      JSON.stringify({
+        op: "publish",
+        topic: "/publish_topic",
+        msg: { data: "test message" },
+      }),
+    );
+
+    expect(mockServer.messages).toContain(
+      JSON.stringify({
+        op: "publish",
+        topic: "/publish_topic",
+        msg: "string_should_work_too",
+      }),
+    );
+  });
+
+  it("correctly parses and sends subscribe messages", async () => {
+    const { getByTestId } = render(
+      <ROSProvider>
+        <ExposeROSProvider />
+      </ROSProvider>,
+    );
+    await mockServer.connected;
+
+    act(() => {
+      getByTestId("subscribe").click();
+    });
+
+    await vi.waitFor(() => {
+      expect(mockServer.messages.length).toBeGreaterThan(0);
+    });
+
+    expect(mockServer.messages).toContain(
+      JSON.stringify({
+        op: "subscribe",
+        topic: "/subscribe_topic",
+        type: "std_msgs/msg/String",
+      }),
+    );
+  });
 });
-
-/**
- * A react component for exposing the state from `ROSProvider.tsx`.
- * @returns divs containing the exposed data
- */
-function ExposeState() {
-  const WSHistory = useContext(WSHistoryContext);
-  const DiscoveredNodes = useContext(DiscoveredNodesContext);
-
-  const WSHistoryString = JSON.stringify(WSHistory);
-  const DiscoveredNodesString = JSON.stringify(DiscoveredNodes);
-
-  return (
-    <div data-testid="exposed-ros-context">
-      <div data-testid="ws-history">{WSHistoryString}</div>
-      <div data-testid="discovered-nodes">{DiscoveredNodesString}</div>
-    </div>
-  );
-}
