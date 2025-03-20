@@ -1,6 +1,6 @@
 import { Circle } from "@mui/icons-material";
-import { Status, StatusColors, type StatusIcon } from "../types/status";
 import { CircularProgress, SxProps } from "@mui/material";
+import { Status, StatusColors, type StatusIcon } from "../types/status";
 
 /**
  * Renders a colored circle icon corresponding with the given status. The colors can be

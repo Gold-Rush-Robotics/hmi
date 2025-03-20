@@ -1,8 +1,8 @@
+import { Avatar, Box, Paper, Typography } from "@mui/material";
 import type { NavBar } from "../../types/navbar";
 import EStop from "./EStop";
 import StartButton from "./StartButton";
 import StatusSummary from "./StatusSummary";
-import { Avatar, Box, Paper, Typography } from "@mui/material";
 
 /**
  * The upper navigation bar of the app.

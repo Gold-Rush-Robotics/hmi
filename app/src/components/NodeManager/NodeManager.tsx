@@ -1,9 +1,9 @@
 import { Stack, Typography } from "@mui/material";
-import type { NodeManager } from "../../types/nodeManager";
-import NodeItem from "./NodeItem";
-import { Status } from "../../types/status";
 import { ReactElement, useContext } from "react";
+import type { NodeManager } from "../../types/nodeManager";
+import { Status } from "../../types/status";
 import { DiscoveredNodesContext } from "../Providers/ROSProvider";
+import NodeItem from "./NodeItem";
 
 /**
  * A component that lists all the nodes as detected from ROS, with an icon for their

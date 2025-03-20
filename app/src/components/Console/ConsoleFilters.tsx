@@ -1,7 +1,7 @@
-import { Box, Button, Chip, ToggleButton } from "@mui/material";
-import type { ConsoleFilters } from "../../types/console";
+import { FilterList } from "@mui/icons-material";
+import { Box, Chip, ToggleButton } from "@mui/material";
 import { useState } from "react";
-import { Filter, Filter1, FilterList } from "@mui/icons-material";
+import type { ConsoleFilters } from "../../types/console";
 
 /**
  * ConsoleFilters component for displaying and managing topic filters.

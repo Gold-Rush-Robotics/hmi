@@ -1,8 +1,7 @@
-import { Avatar, Button, IconButton, Stack, Typography } from "@mui/material";
-import { Status } from "../../types/status";
-import type { EStop } from "../../types/navbar";
-import { SpaceBar } from "@mui/icons-material";
+import { Avatar, Button, Typography } from "@mui/material";
 import { useContext } from "react";
+import type { EStop } from "../../types/navbar";
+import { Status } from "../../types/status";
 import { ROSCommunicationContext } from "../Providers/ROSProvider";
 
 /**

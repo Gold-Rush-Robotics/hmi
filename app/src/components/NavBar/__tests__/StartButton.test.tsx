@@ -1,10 +1,10 @@
-import { act, cleanup, findByRole, render } from "@testing-library/react";
+import { act, cleanup, render } from "@testing-library/react";
 import WS from "jest-websocket-mock";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
+import { Status } from "../../../types/status";
 import ROSProvider from "../../Providers/ROSProvider";
 import { ExposeROSProvider } from "../../Providers/__tests__/ExposeROSProvider";
 import StartButton from "../StartButton";
-import { Status } from "../../../types/status";
 
 describe("StartButton", () => {
   const mockNodeMsgData = {

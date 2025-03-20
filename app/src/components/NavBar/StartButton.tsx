@@ -1,9 +1,9 @@
+import { Check, PlayArrow } from "@mui/icons-material";
 import { IconButton } from "@mui/material";
+import { useContext, useEffect, useState } from "react";
 import type { StartButton } from "../../types/navbar";
 import { Status } from "../../types/status";
 import { isRunning } from "../../util/status";
-import { Check, PlayArrow } from "@mui/icons-material";
-import { useContext, useEffect, useState } from "react";
 import { ROSCommunicationContext } from "../Providers/ROSProvider";
 
 /**

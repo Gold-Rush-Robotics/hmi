@@ -1,10 +1,10 @@
-import { useContext, useState } from "react";
-import "/src/css/App.css";
-import NavBar from "./NavBar/NavBar";
 import { Box, Grid2 as Grid } from "@mui/material";
-import NodeManager from "./NodeManager/NodeManager";
+import { useContext, useState } from "react";
 import Console from "./Console/Console";
+import NavBar from "./NavBar/NavBar";
+import NodeManager from "./NodeManager/NodeManager";
 import { GlobalStatusContext } from "./Providers/ROSProvider";
+import "/src/css/App.css";
 
 /**
  * The entry point of the program.

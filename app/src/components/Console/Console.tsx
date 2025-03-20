@@ -1,10 +1,9 @@
-import { SetStateAction, useContext, useEffect, useRef, useState } from "react";
-import type { Console, RosConsoleMessage } from "../../types/console";
-import { Box, IconButton, Paper, Stack, Typography } from "@mui/material";
 import { Close } from "@mui/icons-material";
+import { Box, IconButton, Paper, Stack, Typography } from "@mui/material";
+import { format } from "date-fns";
+import { useContext, useEffect, useRef, useState } from "react";
+import type { Console, RosConsoleMessage } from "../../types/console";
 import { WSHistoryContext } from "../Providers/ROSProvider";
-import { RosMessage } from "../../types/rosProvider";
-import { format, formatDate } from "date-fns";
 import ConsoleFilters from "./ConsoleFilters";
 
 /**

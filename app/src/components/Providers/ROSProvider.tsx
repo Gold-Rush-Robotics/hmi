@@ -10,8 +10,8 @@ import type {
   RosType,
   WSHistory,
 } from "../../types/rosProvider";
-import { deepCombineObjects } from "../../util/util";
 import { Status } from "../../types/status";
+import { deepCombineObjects } from "../../util/util";
 
 export const WSHistoryContext = createContext<WSHistory>({});
 export const DiscoveredNodesContext = createContext<DiscoveredNodes>({});
