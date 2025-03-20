@@ -28,6 +28,26 @@ Or:
 
 ### Building
 
+#### ROS Communication
+
+For the site to be able to connect and interact with ros, you will need to:
+
+1. include the contents of ./ros in your ros environment, and
+2. have rosbridge-suite installed and running for the client to be able to communicate to ROS (as in, fetch nodes, start/stop the robot, etc.).
+
+You can do this in your ROS environment by:
+
+```bash
+# Install ROSBridge-Suite
+apt update # fetch package list
+apt install ros-<ros distro>-rosbridge-suite
+
+# Start ROSBridge (you may need to colcon build first)
+ros2 launch rosbridge_server rosbridge_websocket_launch.xml
+```
+
+#### Hosting the App
+
 This repository includes a Dockerfile that will automatically build and host the React app via Nginx. Since the backend is essentially ROS, this hosting is very basic but works fine. It can be run by:
 
 ```bash
@@ -48,7 +68,7 @@ You should then find the compiled assets + JS in `./app/dist`.
 ## Development instructions 💻️
 
 > [!IMPORTANT]
-> This project was made with yarn, please do not use npm!
+> This project was made with yarn, please do not use other package managers such as npm!
 
 To get started with development, clone this repository, and then you can spin up a development server like so:
 
@@ -77,7 +97,17 @@ Additionally, if you are using VSCode, there are extensions that will help with 
 
 ## Structure 🗃️
 
-- This section will be updated as code gets added to this repository.
+The project is organized into several key directories, each serving a distinct purpose:
+
+- **`app/`**: Contains the React application built with Vite, forming the core of the HMI's user interface.
+  - **`src/`**: Houses the source code for the React application, including components, types, and utility functions.
+  - **`public/`**: Stores static assets like the favicon and other images.
+  - **`node_modules/`**: Project dependencies managed by Yarn.
+- **`ros/src/`**: Contains ROS-related code for interfacing with the robot.
+  - **`node_info/`**: ROS package providing node information to the app
+  - **`node_info_interface/`**: ROS package for interfacing with the app (for services)
+
+This structure may change throughout the development of this project.
 
 ## License ⚖️
 
