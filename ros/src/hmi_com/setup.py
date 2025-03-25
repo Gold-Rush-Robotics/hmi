@@ -16,11 +16,11 @@ setup(
     maintainer='root',
     maintainer_email='git@swiftcreekrobotics.onmicrosoft.com',
     description='TODO: Package description',
-    license='Apache-2.0',
+    license='MIT',
     tests_require=['pytest'],
     entry_points={
         'console_scripts': [
-            "publisher = node_info.main_node_info:main"
+            "start = node_info.hmi_com:main"
         ],
     },
 )
