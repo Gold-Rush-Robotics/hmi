@@ -40,7 +40,7 @@ You can do this in your ROS environment by:
 ```bash
 # Install ROSBridge-Suite
 apt update # fetch package list
-apt install ros-<ros distro>-rosbridge-suite
+apt install ros-humble-rosbridge-suite # replace humble with your ros distro
 
 # Start ROSBridge (you may need to colcon build first)
 ros2 launch rosbridge_server rosbridge_websocket_launch.xml
@@ -64,6 +64,14 @@ yarn build
 ```
 
 You should then find the compiled assets + JS in `./app/dist`.
+
+#### ROS Endpoints
+
+The included packages in /ros/src are self-contained and as long as they are included in your ROS environment they will automatically communicate most of the information between ROS and React. However, there is one topic that does require custom implementation in your ROS environment:
+
+Topic: `/hmi_start_stop`
+Type: String
+This topic will either send "start" or "stop" to ROS.
 
 ## Development instructions 💻️
 
