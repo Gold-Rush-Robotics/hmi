@@ -112,8 +112,8 @@ The project is organized into several key directories, each serving a distinct p
   - **`public/`**: Stores static assets like the favicon and other images.
   - **`node_modules/`**: Project dependencies managed by Yarn.
 - **`ros/src/`**: Contains ROS-related code for interfacing with the robot.
-  - **`node_info/`**: ROS package providing node information to the app
-  - **`node_info_interface/`**: ROS package for interfacing with the app (for services)
+  - **`hmi_com/`**: ROS package handling most communication between ROS and the HMI (mainly node information)
+  - **`hmi_com_interface/`**: ROS package for interfacing with the app (for services)
 
 This structure may change throughout the development of this project.
 
