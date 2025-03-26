@@ -10,7 +10,7 @@ The goal of this project is to create an intuitive and reliable interface that a
 
 This repository currently uses **React** (built with Vite) to build a responsive and dynamic interface. React will be used to display input options and such on the touchscreen on the robot. This should also allow for remote monitoring in the future via a tablet or laptop to get more advanced information. As development progresses, ROS will be integrated to allow for direct communication with the robot.
 
-## Build instructions 🛠️
+## Usage/Build Instructions 🛠️
 
 ### Prerequisites
 
@@ -26,16 +26,15 @@ Or:
 > [!NOTE]
 > You will need all of these installed (especially yarn and node) if you plan on doing any development in this repository
 
-### Building
-
-#### ROS Communication
+### ROS Communication
 
 For the site to be able to connect and interact with ros, you will need to:
 
-1. include the contents of ./ros in your ros environment, and
-2. have rosbridge-suite installed and running for the client to be able to communicate to ROS (as in, fetch nodes, start/stop the robot, etc.).
+1. Include the contents of ./ros in your ros environment, and
+2. Have rosbridge-suite installed and running for the client to be able to communicate to ROS (as in, fetch nodes, start/stop the robot, etc.).
+3. Start the hmi_com node
 
-You can do this in your ROS environment by:
+You can setup rosbridge-suite by:
 
 ```bash
 # Install ROSBridge-Suite
@@ -46,23 +45,20 @@ apt install ros-humble-rosbridge-suite # replace humble with your ros distro
 ros2 launch rosbridge_server rosbridge_websocket_launch.xml
 ```
 
-#### Running ROS package
+Then, to start the node/service:
 
-The `hmi_com` ROS package needs to be running for the site to function properly.
-
-To do this, navigate to the `ros/` directory and execute:
-
-```bash 
+```bash
 ros2 run hmi_com start
 ```
 
 > [!NOTE]
 > Before running this command, ensure that:
+>
 > - You are in a ROS environment.
 > - You have built the package and interface using `colcon build`.
 > - You have sourced the setup file: `source install/setup.zsh`.
 
-#### Hosting the App
+### Hosting the App
 
 This repository includes a Dockerfile that will automatically build and host the React app via Nginx. Since the backend is essentially ROS, this hosting is very basic but works fine. It can be run by:
 
@@ -81,13 +77,13 @@ yarn build
 
 You should then find the compiled assets + JS in `./app/dist`.
 
-#### ROS Endpoints
+### ROS Endpoints
 
 The included packages in /ros/src are self-contained and as long as they are included in your ROS environment they will automatically communicate most of the information between ROS and React. However, there is one topic that does require custom implementation in your ROS environment:
 
-Topic: `/hmi_start_stop`
-Type: String
-This topic will either send "start" or "stop" to ROS.
+- **Topic**: `/hmi_start_stop`
+- **Type**: `String`
+- This topic will either send `"start"` or `"stop"` to ROS.
 
 ## Development instructions 💻️
 
