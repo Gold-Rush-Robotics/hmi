@@ -31,39 +31,33 @@ class HmiCom(Node):
         ``publishers, subscribers, service_servers, and service_clients.``
         
         Returns:
-            node_data: JSON formatted ``str`` containing node data.
+            node_info: JSON formatted ``str`` containing node data.
         """
 
-        node_data = {}  # Final return value
-        valid_titles_template = {
-            'publishers': [],
-            'subscribers': [],
-            'service_servers': [],
-            'service_clients': [],
-        }
-
+        node_info = {}  # Final return value
+    
         try:
             nodes = self.get_node_names_and_namespaces()
             
             for node_name, namespace in nodes:
-                valid_titles = valid_titles_template.copy()  # Copy for each node.
 
-                # Get topic info and parse.
-                valid_titles['publishers'] = self.parse_topics("topic", self.get_publisher_names_and_types_by_node(node_name, namespace))
-                valid_titles['subscribers'] = self.parse_topics("topic", self.get_subscriber_names_and_types_by_node(node_name, namespace))
-                valid_titles['service_servers'] = self.parse_topics("service", self.get_service_names_and_types_by_node(node_name, namespace))
-                valid_titles['service_clients'] = self.parse_topics("service", self.get_client_names_and_types_by_node(node_name, namespace))
+                node_data = {
+                    'publishers':self.parse_node_data("topic", self.get_publisher_names_and_types_by_node(node_name, namespace)),
+                    'subscribers':self.parse_node_data("topic", self.get_subscriber_names_and_types_by_node(node_name, namespace)),
+                    'service_servers':self.parse_node_data("service", self.get_service_names_and_types_by_node(node_name, namespace)),
+                    'service_clients':self.parse_node_data("service", self.get_client_names_and_types_by_node(node_name, namespace))
+                }
 
-                node_data[f"{namespace}{node_name}"] = valid_titles
+                node_info[f"{namespace}{node_name}"] = node_data
 
-            return dumps(node_data)
+            return dumps(node_info)
 
         except Exception as e:
             return dumps({"Error while getting node info": str(e)})
         
-    def parse_topics(self, key_name: str, data: list[tuple[str, list[str]]]) -> list[dict[str, str]]:
+    def parse_node_data(self, key_name: str, data: list[tuple[str, list[str]]]) -> list[dict[str, str]]:
         try:
-            return [{key_name:topic, "type":data_types[0] if data_types else "Unknown"} for topic, data_types in data]
+            return [{key_name:name, "type":data_types[0] if data_types else "Unknown"} for name, data_types in data]
         except Exception as e:
             return [{"Error while parsing": str(e)}]
         
