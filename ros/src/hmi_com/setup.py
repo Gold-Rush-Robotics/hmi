@@ -1,6 +1,6 @@
 from setuptools import setup
 
-package_name = 'node_info'
+package_name = 'hmi_com'
 
 setup(
     name=package_name,
@@ -13,14 +13,14 @@ setup(
     ],
     install_requires=['setuptools'],
     zip_safe=True,
-    maintainer='root',
-    maintainer_email='git@swiftcreekrobotics.onmicrosoft.com',
-    description='TODO: Package description',
+    maintainer='GoldRushRobotics',
+    maintainer_email='goldrushrobotics@gmail.com',
+    description='This ROS package provides real-time insights into active ROS nodes by publishing JSON-formatted information about their publishers, subscribers, service servers, and service clients.',
     license='MIT',
     tests_require=['pytest'],
     entry_points={
         'console_scripts': [
-            "start = node_info.hmi_com:main"
+            "start = hmi_com.hmi_com_main:main"
         ],
     },
 )

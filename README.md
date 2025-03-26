@@ -46,6 +46,22 @@ apt install ros-humble-rosbridge-suite # replace humble with your ros distro
 ros2 launch rosbridge_server rosbridge_websocket_launch.xml
 ```
 
+#### Running ROS package
+
+The `hmi_com` ROS package needs to be running for the site to function properly.
+
+To do this, navigate to the `ros/` directory and execute:
+
+```bash 
+ros2 run hmi_com start
+```
+
+> [!NOTE]
+> Before running this command, ensure that:
+> - You are in a ROS environment.
+> - You have built the package and interface using `colcon build`.
+> - You have sourced the setup file: `source install/setup.zsh`.
+
 #### Hosting the App
 
 This repository includes a Dockerfile that will automatically build and host the React app via Nginx. Since the backend is essentially ROS, this hosting is very basic but works fine. It can be run by:
