@@ -9,7 +9,7 @@ body:
   - type: input
     id: what
     attributes:
-      label: WHAT IS ISSUE
+      label: What is your issue?
       description: What is wrong
       placeholder: It's not working...
     validations:
@@ -17,7 +17,7 @@ body:
   - type: textarea
     id: how
     attributes:
-      label: HOW DID HAPPEN
+      label: How did it happen?
       description: What happened to make the issue appear? The more detailed your breakdown is the easier it is to reproduce/debug/fix
       placeholder: |
         1. Turned on robot
@@ -39,6 +39,6 @@ body:
   - type: textarea
     id: misc
     attributes:
-      label: OTHER INFORMATION
-      description: Attach other useful information (i.e., a video of what happened) here. The more info we have the easier it should be to fix.
+      label: Other Information
+      description: Attach other useful information (e.g., a video of what happened) here. The more info we have the easier it should be to fix.
       placeholder: "Here is a video of what is happening: (you can click here and drag and drop or paste to upload media)"

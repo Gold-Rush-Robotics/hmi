@@ -9,7 +9,7 @@ body:
   - type: textarea
     id: what
     attributes:
-      label: WHAT IS REQUEST
+      label: Request
       description: What do you want to add/request?
       placeholder: I need the robot to do this...
     validations:
