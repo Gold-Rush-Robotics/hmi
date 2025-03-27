@@ -6,7 +6,9 @@ import type {
   RosCommunicationContext,
   RosMessage,
   RosNodeInfo,
+  RosPublishResponse,
   RosResponse,
+  RosServiceRespone,
   RosType,
   WSHistory,
 } from "../../types/rosProvider";
@@ -34,34 +36,30 @@ function ROSProvider({ ...props }) {
   const wsRef = useRef<WebSocket | null>(null);
   const [wsHistory, setWSHistory] = useState<WSHistory>({});
   const [globalStatus, setGlobalStatus] = useState<Status>(Status.Unknown);
-  const [discoveredNodes, setDiscoveredNodes] = useState<DiscoveredNodes>({
-    "/node_info": {
-      publishers: [
-        {
-          topic: "/node_info_publisher",
-          type: "std_msgs/msg/String",
-        },
-      ],
-      subscribers: [],
-      action_clients: [],
-      action_servers: [],
-      service_clients: [],
-      service_servers: [],
-    },
-  });
-  const publishers = [
+  const [lastReceived, setLastReceived] = useState(new Date());
+  const timeoutPollRate = 10000; // milliseconds; we should be receiving data from ROS every ~5 seconds at minimum
+
+  /**
+   * Default discovered node list. Includes topics we are initially actively
+   * using or could possibly use before receiving an initial response.
+   */
+  const [discoveredNodes, setDiscoveredNodes] = useState<DiscoveredNodes>({});
+
+  /**
+   * All publishers present in this app. Everything in here will be registered with ROS.
+   */
+  const publishers: DiscoveredTopic[] = [
     {
       topic: "/hmi_start_stop",
       type: "std_msgs/msg/String",
     },
   ];
-  const [lastReceived, setLastReceived] = useState(new Date());
-  const timeoutPollRate = 10000; // milliseconds; we should be receiving data from ROS every ~5 seconds at minimum
 
   /**
-   * Handles the main connection for the WebSocket (connections, errors, etc.)
-   * Note that this has no deps array - if there are deps then it will be running
-   * handleWsMessage() from the old state until one of the deps update.
+   * Handles the main connection for the WebSocket (connections, errors, etc.).
+   * Note that this has (or should have) no deps array - if there are deps then
+   * it will be running handleWsMessage() from the old state until one of the
+   * deps update.
    */
   useEffect(() => {
     if (wsRef.current === null) {
@@ -73,7 +71,7 @@ function ROSProvider({ ...props }) {
     ws.onopen = () => {
       console.log("Connected to ROS!");
       setLastReceived(new Date()); // to avoid timeout
-      subscribe("/node_info_publisher", "std_msgs/msg/String");
+      callService("/node_info_srv");
       for (const publisher of publishers) {
         advertise(publisher.topic, publisher.type);
       }
@@ -127,14 +125,31 @@ function ROSProvider({ ...props }) {
         `Error parsing data. Data: '${JSON.stringify(event.data)}'`,
       );
     }
+    console.log(data);
 
+    if (data.op === "service_response") {
+      handleServiceResponse(data, timestamp);
+    } else if ((data.op = "publish")) {
+      handleTopicResponse(data, timestamp);
+    } else {
+      throw new Error(`Unknown data type! Data: '${data}'`);
+    }
+  }
+
+  /**
+   * Parses a publisher response received from the ROS websocket.
+   *
+   * @param data The publisher response from ROS.
+   * @param timestamp The timestamp the message was received at.
+   */
+  function handleTopicResponse(data: RosPublishResponse, timestamp: Date) {
     const node = findTopicParent(data.topic);
     const message: RosMessage = {
       message: data.msg.data,
       timestamp,
     };
 
-    if (data.topic == "/node_info_publisher") {
+    if (data.topic == "/node_info_pub") {
       checkNodeUpdates(message);
     }
 
@@ -155,9 +170,28 @@ function ROSProvider({ ...props }) {
   }
 
   /**
-   * Updates nodes based on nodes and topics received from /node_info_publisher
+   * Parses a service response received from the ROS websocket.
    *
-   * @param update The message from /node_info_publisher
+   * @param response The service response from ROS.
+   * @param timestamp The timestamp the response was received at.
+   */
+  function handleServiceResponse(response: RosServiceRespone, timestamp: Date) {
+    const values: any = response.values ?? {};
+    const data = values.data;
+    const message: RosMessage = {
+      timestamp,
+      message: data,
+    };
+
+    if (response.service === "/node_info_srv") {
+      checkNodeUpdates(message);
+    }
+  }
+
+  /**
+   * Updates nodes based on nodes and topics received from /node_info_pub
+   *
+   * @param update The message from /node_info_pub or data from
    */
   function checkNodeUpdates(update: RosMessage) {
     if (globalStatus === Status.Unknown) setGlobalStatus(Status.Stopped);
@@ -167,7 +201,7 @@ function ROSProvider({ ...props }) {
       data = JSON.parse(update.message.toString());
     } catch (e) {
       throw new Error(
-        `Error parsing data. Data: '${JSON.stringify(update.message)}'`,
+        `Error parsing node info. Data: '${JSON.stringify(update.message)}. Error: ${e}'`,
       );
     }
 
@@ -221,8 +255,6 @@ function ROSProvider({ ...props }) {
         newDiscovered[node] = {
           publishers: newDiscoveredPubs,
           subscribers: newDiscoveredSubs,
-          action_clients: nodeData.action_clients,
-          action_servers: nodeData.action_servers,
           service_clients: nodeData.service_clients,
           service_servers: nodeData.service_servers,
         };
@@ -257,6 +289,22 @@ function ROSProvider({ ...props }) {
       op: "subscribe",
       topic,
       type,
+    };
+    sendRaw(message);
+  }
+
+  /**
+   * Calls the specified service with the provided args.
+   *
+   * @param service The name of the service to call.
+   * @param args Optional. A list of json objects representing the arguments. See https://github.com/RobotWebTools/rosbridge_suite/blob/ros2/ROSBRIDGE_PROTOCOL.md#338-call-service
+   */
+  function callService(service: string, args?: object[]) {
+    args ??= [];
+    const message = {
+      op: "call_service",
+      service,
+      args,
     };
     sendRaw(message);
   }
@@ -300,7 +348,7 @@ function ROSProvider({ ...props }) {
     const message = {
       op: "publish",
       topic,
-      msg,
+      msg: { data: msg },
     };
     sendRaw(message);
   }

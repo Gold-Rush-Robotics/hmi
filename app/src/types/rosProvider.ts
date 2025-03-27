@@ -19,8 +19,6 @@ export type DiscoveredNodes = {
 };
 
 export type DiscoveredNodeInfo = {
-  action_clients: DiscoveredTopic[];
-  action_servers: DiscoveredTopic[];
   publishers: DiscoveredTopic[];
   service_clients: DiscoveredTopic[];
   service_servers: DiscoveredTopic[];
@@ -34,10 +32,19 @@ export type DiscoveredTopic = {
 
 export type RosType = "std_msgs/msg/String" | string;
 
-export type RosResponse = {
-  op: string;
+export type RosResponse = RosPublishResponse | RosServiceRespone;
+
+export type RosPublishResponse = {
+  op: "publish";
   topic: string;
   msg: any;
+};
+
+export type RosServiceRespone = {
+  op: "service_response";
+  service: RosType;
+  values: undefined | object;
+  result: boolean;
 };
 
 export type RosNodeInfo = {
@@ -45,8 +52,6 @@ export type RosNodeInfo = {
 };
 
 export type RosNodeConnections = {
-  action_clients: RosNodeConnection[];
-  action_servers: RosNodeConnection[];
   publishers: RosNodeConnection[];
   service_clients: RosNodeConnection[];
   service_servers: RosNodeConnection[];
