@@ -1,8 +1,9 @@
+from json import dumps
+
 import rclpy
+from hmi_com_interface.srv import NodeInfoSrv
 from rclpy.node import Node
 from std_msgs.msg import String
-from hmi_com_interface.srv import NodeInfoSrv
-from json import dumps
 
 CALLBACK_TIME = 5
 
@@ -42,10 +43,10 @@ class HmiCom(Node):
             for node_name, namespace in nodes:
 
                 node_data = {
-                    'publishers':self.parse_node_data("topic", self.get_publisher_names_and_types_by_node(node_name, namespace)),
-                    'subscribers':self.parse_node_data("topic", self.get_subscriber_names_and_types_by_node(node_name, namespace)),
-                    'service_servers':self.parse_node_data("service", self.get_service_names_and_types_by_node(node_name, namespace)),
-                    'service_clients':self.parse_node_data("service", self.get_client_names_and_types_by_node(node_name, namespace))
+                    'publishers':self.parse_node_data(self.get_publisher_names_and_types_by_node(node_name, namespace)),
+                    'subscribers':self.parse_node_data(self.get_subscriber_names_and_types_by_node(node_name, namespace)),
+                    'service_servers':self.parse_node_data(self.get_service_names_and_types_by_node(node_name, namespace)),
+                    'service_clients':self.parse_node_data(self.get_client_names_and_types_by_node(node_name, namespace))
                 }
 
                 node_info[f"{namespace}{node_name}"] = node_data
@@ -55,9 +56,9 @@ class HmiCom(Node):
         except Exception as e:
             return dumps({"Error while getting node info": str(e)})
         
-    def parse_node_data(self, key_name: str, data: list[tuple[str, list[str]]]) -> list[dict[str, str]]:
+    def parse_node_data(self, data: list[tuple[str, list[str]]]) -> list[dict[str, str]]:
         try:
-            return [{key_name:name, "type":data_types[0] if data_types else "Unknown"} for name, data_types in data]
+            return [{"topic":name, "type":data_types[0] if data_types else "/unknown"} for name, data_types in data]
         except Exception as e:
             return [{"Error while parsing": str(e)}]
         
