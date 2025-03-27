@@ -317,9 +317,9 @@ function ROSProvider({ ...props }) {
    */
   function sendRaw(message: object) {
     const socket = wsRef.current;
-    if (!socket)
+    if (!socket) {
       throw new Error(`Socket is null! Unable to send message:\n${message}.`);
-
+    }
     socket.send(JSON.stringify(message));
   }
 

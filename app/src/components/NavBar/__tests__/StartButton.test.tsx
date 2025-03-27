@@ -70,7 +70,7 @@ describe("StartButton", () => {
       JSON.stringify({
         op: "publish",
         topic: "/hmi_start_stop",
-        msg: "start",
+        msg: { data: "start" },
       }),
     );
   });

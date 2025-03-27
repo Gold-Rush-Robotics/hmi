@@ -45,7 +45,7 @@ export function ExposeROSProvider() {
       <button
         data-testid="publish"
         onClick={() => {
-          publish("/publish_topic", { data: "test message" });
+          publish("/publish_topic", { msg: "test message", bool: true });
           publish("/publish_topic", "string_should_work_too");
         }}
       ></button>

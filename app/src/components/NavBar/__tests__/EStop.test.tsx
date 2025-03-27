@@ -68,7 +68,7 @@ describe("EStop", () => {
       JSON.stringify({
         op: "publish",
         topic: "/hmi_start_stop",
-        msg: "stop",
+        msg: { data: "stop" },
       }),
     );
   });
