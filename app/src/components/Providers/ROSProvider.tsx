@@ -24,6 +24,7 @@ export const GlobalStatusContext = createContext<GlobalStatusContextType>({
 export const ROSCommunicationContext = createContext<RosCommunicationContext>({
   sendRaw: () => {},
   advertise: () => {},
+  callService: () => {},
   publish: () => {},
   subscribe: () => {},
 });
@@ -378,7 +379,7 @@ function ROSProvider({ ...props }) {
       <WSHistoryContext.Provider value={wsHistory}>
         <DiscoveredNodesContext.Provider value={discoveredNodes}>
           <ROSCommunicationContext.Provider
-            value={{ sendRaw, advertise, publish, subscribe }}
+            value={{ sendRaw, advertise, callService, publish, subscribe }}
           >
             {props.children}
           </ROSCommunicationContext.Provider>
