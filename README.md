@@ -41,9 +41,14 @@ You can setup rosbridge-suite by:
 apt update # fetch package list
 apt install ros-humble-rosbridge-suite # replace humble with your ros distro
 
-# Start ROSBridge (you may need to colcon build first)
+# Build and source ROS packages
+colcon build
+source ros2_ws/install/setup.zsh
 ros2 launch rosbridge_server rosbridge_websocket_launch.xml
 ```
+
+> [!IMPORTANT]
+> If you do not properly source in the same terminal before launching ROSBridge, ROSBridge will not be able to properly call services (which this app relies on). If anything isn't working, and you see errors in ROSBridge about services and/or packages not being found, this is why.
 
 Then, to start the node/service:
 
