@@ -1,24 +1,41 @@
-import { Avatar, IconButton } from "@mui/joy";
-import { Status } from "../../types/status";
+import { Avatar, Button, Typography } from "@mui/material";
+import { useContext } from "react";
 import type { EStop } from "../../types/navbar";
+import { Status } from "../../types/status";
+import { ROSCommunicationContext } from "../Providers/ROSProvider";
 
+/**
+ * Emergency Stop button to immediately send a message to ROS and stop the robot.
+ *
+ * @param props.setStatus A function to update the state if the status.
+ */
 function EStop({ ...props }: EStop) {
+  const send = useContext(ROSCommunicationContext);
+
   function onClick() {
-    console.log(props.setStatus(Status.Stopped));
+    send.publish("/hmi_start_stop", "stop");
+    props.setStatus(Status.Stopped);
   }
 
   return (
-    <IconButton
+    <Button
       onClick={onClick}
+      variant="contained"
       sx={{
-        padding: 0,
+        flex: 1,
+        height: "40px",
         borderRadius: 25,
-        borderWidth: "2px",
-        borderStyle: "inset",
+        backgroundColor: "#fee415",
+        color: "red",
+        p: 0,
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "space-between",
       }}
     >
+      <Typography sx={{ fontWeight: "bold", m: 2 }}>EMERGENCY STOP</Typography>
       <Avatar src="/estop.png">STOP</Avatar>
-    </IconButton>
+    </Button>
   );
 }
 

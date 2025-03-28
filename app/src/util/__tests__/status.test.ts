@@ -6,8 +6,7 @@ describe("status", () => {
   it("should be correct", () => {
     const runningStates = [
       Status.OK,
-      Status.Stopped,
-      Status.Unknown,
+      Status.Loading,
       Status.Warning,
       Status.Error,
       Status.Critical,
