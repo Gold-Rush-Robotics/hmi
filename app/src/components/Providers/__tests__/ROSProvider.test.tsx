@@ -123,7 +123,7 @@ describe("ROSProvider", () => {
     // I don't know why this test just isn't working, it works fine in prod
     // Make sure that messages are being logged to websocket history context
     // const wsHistoryEl = within(container).getByTestId("ws-history");
-    // const wsHistory = JSON.parse(wsHistoryEl.textContent || "");
+    // const wsHistory = JSON.parse(wsHistoryEl.textContent!);
     // expect("/hmi_com" in wsHistory).toBeTruthy();
     // expect("/node_info_pub" in wsHistory["/hmi_com"]).toBeTruthy();
     // expect(wsHistory["/hmi_com"]["/node_info_pub"].length === 1);
@@ -140,6 +140,7 @@ describe("ROSProvider", () => {
 
     mockServer.send(
       JSON.stringify({
+        op: "publish",
         topic: "/test_topic",
         msg: { data: "YIPPEE!!" },
       }),
