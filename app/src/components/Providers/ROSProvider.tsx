@@ -130,10 +130,10 @@ function ROSProvider({ ...props }) {
 
     if (data.op === "service_response") {
       handleServiceResponse(data, timestamp);
-    } else if ((data.op = "publish")) {
+    } else if (data.op === "publish") {
       handleTopicResponse(data, timestamp);
     } else {
-      throw new Error(`Unknown data type! Data: '${data}'`);
+      throw new Error(`Unknown data type! Data: '${JSON.stringify(data)}'`);
     }
   }
 
