@@ -1,28 +1,43 @@
-import { IconButton } from "@mui/joy";
+import { Check, PlayArrow } from "@mui/icons-material";
+import { IconButton } from "@mui/material";
+import { useContext, useEffect, useState } from "react";
 import type { StartButton } from "../../types/navbar";
 import { Status } from "../../types/status";
 import { isRunning } from "../../util/status";
-import { PlayArrow } from "@mui/icons-material";
-import { useEffect, useState } from "react";
+import { ROSCommunicationContext } from "../Providers/ROSProvider";
 
+/**
+ * Sends a message to ROS when clicked if the robot is not already in a running state.
+ *
+ * @param props.status The current status of the robot.
+ * @param props.setStatus A function to update the state if the status.
+ */
 function StartButton({ ...props }: StartButton) {
+  const send = useContext(ROSCommunicationContext);
   const [wait, setWait] = useState(-1); // until proper implementation
-  const [disabled, setDisabled] = useState(isRunning(props.status));
+  const [disabled, setDisabled] = useState(
+    isRunning(props.status) || props.status === Status.Unknown,
+  );
   function onClick() {
+    props.setStatus(Status.Loading);
+    send.publish("/hmi_start_stop", "start");
     setDisabled(true);
     setWait(5); // until proper implementation
   }
 
+  /**
+   * Temporary delay until this is handled in ROS.
+   */
   useEffect(() => {
     if (wait === 0) {
-      if (props.status == Status.Stopped) {
+      if (props.status === Status.Loading) {
         props.setStatus(Status.OK);
         setWait(-1);
       }
       return;
     }
     if (wait < 0) {
-      setDisabled(isRunning(props.status));
+      setDisabled(isRunning(props.status) || props.status === Status.Unknown);
       return;
     }
 
@@ -33,13 +48,21 @@ function StartButton({ ...props }: StartButton) {
 
   return (
     <IconButton
-      variant="solid"
-      color="primary"
+      {...(wait > -1 || props.status === Status.Unknown
+        ? { loading: true }
+        : undefined)}
       onClick={onClick}
       disabled={disabled}
-      sx={{ borderRadius: 50, ml: 2 }}
+      sx={{
+        ml: 2,
+        bgcolor: "primary.main", // Background color (using theme primary color)
+        color: "primary.contrastText", // Text/icon color that contrasts with background
+        "&:hover": {
+          bgcolor: "primary.dark", // Darker shade on hover
+        },
+      }}
     >
-      <PlayArrow />
+      {disabled ? <Check /> : <PlayArrow />}
     </IconButton>
   );
 }

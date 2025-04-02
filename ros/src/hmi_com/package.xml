@@ -1,0 +1,22 @@
+<?xml version="1.0"?>
+<?xml-model href="http://download.ros.org/schema/package_format3.xsd" schematypens="http://www.w3.org/2001/XMLSchema"?>
+<package format="3">
+  <name>hmi_com</name>
+  <version>0.0.0</version>
+  <description>This ROS package provides real-time insights into active ROS nodes by publishing JSON-formatted information about their publishers, subscribers, service servers, and service clients.</description>
+  <maintainer email="goldrushrobotics@gmail.com">GoldRushRobotics</maintainer>
+  <license>MIT</license>
+
+  <test_depend>ament_copyright</test_depend>
+  <test_depend>ament_flake8</test_depend>
+  <test_depend>ament_pep257</test_depend>
+  <test_depend>python3-pytest</test_depend>
+
+  <exec_depend>rclpy</exec_depend>
+  <exec_depend>std_msgs</exec_depend>
+  <exec_depend>hmi_com_interface</exec_depend>
+
+  <export>
+    <build_type>ament_python</build_type>
+  </export>
+</package>

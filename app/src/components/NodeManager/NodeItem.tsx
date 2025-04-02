@@ -1,13 +1,16 @@
-import {
-  ChevronRight,
-  ChevronRightOutlined,
-  ChevronRightRounded,
-} from "@mui/icons-material";
-import { Box, Button, Stack, Typography } from "@mui/joy";
+import { ChevronRightRounded } from "@mui/icons-material";
+import { Box, Button, Stack, SxProps, Typography } from "@mui/material";
 import type { NodeItem } from "../../types/nodeManager";
 import StatusIcon from "../StatusIcon";
-import { SxProps } from "@mui/material";
 
+/**
+ * NodeItem component for displaying a node in a list.
+ *
+ * @param props.name The name of the node.
+ * @param props.status The status of the node.
+ * @param props.selection The currently selected node name.
+ * @param props.setSelectedNode Function to set the selected node.
+ */
 function NodeItem({ ...props }: NodeItem) {
   const selected = props.selection === props.name;
   let selectedStatusBorder: SxProps = {};
@@ -26,6 +29,11 @@ function NodeItem({ ...props }: NodeItem) {
         width: "100%",
         borderRadius: 25,
         bgcolor: selected ? "#aaa" : "#eee",
+        textTransform: "none", // Prevents text from being transformed to uppercase
+        color: "inherit", // Keeps the original text color
+        "&:hover": {
+          color: "inherit", // Maintains text color on hover
+        },
       }}
     >
       <Stack
