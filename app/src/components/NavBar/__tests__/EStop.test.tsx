@@ -46,7 +46,7 @@ describe("EStop", () => {
     const html = render(
       <ROSProvider>
         <ExposeROSProvider />
-        <EStop setStatus={setMockStatus} />
+        <EStop style="small" setStatus={setMockStatus} />
       </ROSProvider>,
     );
     await mockServer.connected;

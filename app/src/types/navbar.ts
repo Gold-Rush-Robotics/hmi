@@ -16,5 +16,6 @@ export type NavBar = {
 };
 
 export type EStop = {
+  style: "large" | "small";
   setStatus: Dispatch<SetStateAction<Status>>;
 };
