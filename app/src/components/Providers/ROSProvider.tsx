@@ -13,6 +13,7 @@ import type {
   WSHistory,
 } from "../../types/rosProvider";
 import { Status } from "../../types/status";
+import config from "../../util/config";
 import { deepCombineObjects } from "../../util/util";
 
 export const WSHistoryContext = createContext<WSHistory>({});
@@ -33,7 +34,7 @@ export const ROSCommunicationContext = createContext<RosCommunicationContext>({
  * A global state provider for subscribing to ROS topics and keeping track of received data.
  */
 function ROSProvider({ ...props }) {
-  const rosIP: string = import.meta.env.VITE_ROS_IP || "ws://127.0.0.1:9090";
+  const rosIP = config.rosIp;
   const wsRef = useRef<WebSocket | null>(null);
   const [wsHistory, setWSHistory] = useState<WSHistory>({});
   const [globalStatus, setGlobalStatus] = useState<Status>(Status.Unknown);
