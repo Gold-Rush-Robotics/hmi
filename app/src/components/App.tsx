@@ -42,10 +42,7 @@ function App() {
           />
         </Grid>
         <Grid size={8} height="100%">
-          <Console
-            selectedNode={selectedNode}
-            clearSelectedNode={() => setSelectedNode(null)}
-          />
+          {mainSection}
         </Grid>
       </Grid>
     </Box>
