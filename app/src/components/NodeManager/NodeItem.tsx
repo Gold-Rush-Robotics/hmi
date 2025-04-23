@@ -28,11 +28,15 @@ function NodeItem({ ...props }: NodeItem) {
       sx={{
         width: "100%",
         borderRadius: 25,
+        border: "1px solid",
+        borderColor: selected ? "black" : "gray",
         bgcolor: selected ? "#aaa" : "#eee",
         textTransform: "none", // Prevents text from being transformed to uppercase
         color: "inherit", // Keeps the original text color
         "&:hover": {
-          color: "inherit", // Maintains text color on hover
+          // Maintain colors on hover
+          color: "inherit",
+          borderColor: "inherit",
         },
       }}
     >
