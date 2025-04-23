@@ -14,7 +14,7 @@ import ConsoleFilters from "./ConsoleFilters";
  */
 function Console({ ...props }: Console) {
   const consoleTitle = props.selectedNode
-    ? `Messages from "${props.selectedNode}"`
+    ? `Console: ${props.selectedNode}`
     : "Console";
   const visibility = props.selectedNode ? undefined : { visibility: "hidden" };
   const consoleOutputRef = useRef<HTMLDivElement>(null);
@@ -121,7 +121,16 @@ function Console({ ...props }: Console) {
           justifyContent="space-between"
           alignItems="center"
         >
-          <Typography variant="h6">{consoleTitle}</Typography>
+          <Typography
+            variant="h6"
+            sx={{
+              whiteSpace: "nowrap",
+              overflow: "hidden",
+              textOverflow: "ellipsis",
+            }}
+          >
+            {consoleTitle}
+          </Typography>
           <IconButton
             onClick={props.clearSelectedNode}
             sx={{
