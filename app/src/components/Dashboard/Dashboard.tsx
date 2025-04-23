@@ -7,8 +7,15 @@ import RunningTime from "./RunningTime";
 
 function Dashboard({ ...props }: Dashboard) {
   return (
-    <Paper>
-      <Typography variant="h5" sx={{ fontWeight: "bold", p: 2 }}>
+    <Paper
+      sx={{
+        height: "inherit",
+        display: "flex",
+        flexDirection: "column",
+        borderRadius: "20px 0 0 0",
+      }}
+    >
+      <Typography variant="h5" sx={{ p: 2 }}>
         Dashboard
       </Typography>
       <Grid2 container spacing={2} sx={{ pb: 2 }}>
