@@ -27,8 +27,8 @@ function NodeManager({ ...props }: NodeManager) {
     );
   }
   return (
-    <Stack spacing={1}>
-      <Typography>Running Nodes</Typography>
+    <Stack spacing={1} sx={{ p: 2 }}>
+      <Typography variant="h6">Running Nodes</Typography>
       {nodeList}
     </Stack>
   );

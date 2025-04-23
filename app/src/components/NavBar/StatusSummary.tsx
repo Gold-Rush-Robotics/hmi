@@ -16,6 +16,8 @@ function StatusSummary({ ...props }: StatusSummary) {
         paddingY: 1,
         paddingX: 2,
         borderRadius: 25,
+        border: "1px solid",
+        borderColor: "gray",
       }}
     >
       Status: {props.status}

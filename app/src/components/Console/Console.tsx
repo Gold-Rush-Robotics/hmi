@@ -14,7 +14,7 @@ import ConsoleFilters from "./ConsoleFilters";
  */
 function Console({ ...props }: Console) {
   const consoleTitle = props.selectedNode
-    ? `Messages from "${props.selectedNode}"`
+    ? `Console: ${props.selectedNode}`
     : "Console";
   const consoleOutputRef = useRef<HTMLDivElement>(null);
   const rawSocketHistory = useContext(WSHistoryContext);
@@ -106,17 +106,41 @@ function Console({ ...props }: Console) {
   }
 
   return (
-    <Paper>
-      <Box sx={{ p: 1 }}>
+    <Paper
+      sx={{
+        height: "inherit",
+        display: "flex",
+        flexDirection: "column",
+        borderRadius: "20px 0 0 0",
+      }}
+    >
+      <Box sx={{ pl: 2, pr: 2, pt: 1.5 }}>
         <Stack
           direction="row"
           justifyContent="space-between"
           alignItems="center"
         >
-          <Typography>{consoleTitle}</Typography>
+          <Typography
+            variant="h6"
+            sx={{
+              whiteSpace: "nowrap",
+              overflow: "hidden",
+              textOverflow: "ellipsis",
+            }}
+          >
+            {consoleTitle}
+          </Typography>
           <IconButton
             onClick={props.clearSelectedNode}
-            sx={{ borderRadius: 25 }}
+            sx={{
+              borderRadius: 25,
+              scale: 0.95,
+              border: "1px solid",
+              borderColor: "lightgray",
+              ":hover": {
+                borderColor: "gray",
+              },
+            }}
           >
             <Close />
           </IconButton>
@@ -134,9 +158,12 @@ function Console({ ...props }: Console) {
           bgcolor: "#222",
           height: "60vh",
           color: "#eee",
-          p: 1,
           textAlign: "left",
           overflow: "scroll",
+          flexGrow: 1,
+          borderRadius: "6px",
+          m: 1,
+          p: 1,
         }}
       >
         <pre style={{ margin: 0, padding: 0, whiteSpace: "pre-wrap" }}>

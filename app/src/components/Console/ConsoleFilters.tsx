@@ -96,7 +96,13 @@ function ConsoleFilters({ ...props }: ConsoleFilters) {
   function renderToggleShowButton() {
     return (
       <ToggleButton
-        sx={{ borderRadius: 10, scale: 0.85 }}
+        sx={{
+          borderRadius: 10,
+          scale: 0.85,
+          ":hover": {
+            borderColor: "gray",
+          },
+        }}
         size="small"
         value="toggleShowFilters"
         selected={showFilters}
@@ -110,7 +116,21 @@ function ConsoleFilters({ ...props }: ConsoleFilters) {
   }
 
   return (
-    <Box sx={{ width: "100%", display: "flex", alignItems: "center" }}>
+    <Box
+      sx={{
+        width: "100%",
+        display: "flex",
+        alignItems: "center",
+        overflowX: "scroll", // Only horizontal scroll
+        overflowY: "hidden", // Prevent vertical scroll
+        "&::-webkit-scrollbar": {
+          // Chrome, Safari, newer Edge
+          display: "none",
+        },
+        msOverflowStyle: "none", // IE and Edge
+        whiteSpace: "nowrap", // Keeps content in a single line
+      }}
+    >
       {renderToggleShowButton()}
       {renderFilterChips()}
     </Box>
