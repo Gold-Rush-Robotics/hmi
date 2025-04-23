@@ -23,6 +23,7 @@ export type DiscoveredNodeInfo = {
   service_clients: DiscoveredTopic[];
   service_servers: DiscoveredTopic[];
   subscribers: DiscoveredTopic[];
+  status: Status;
 };
 
 export type DiscoveredTopic = {

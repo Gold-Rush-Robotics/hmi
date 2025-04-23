@@ -1,7 +1,6 @@
 import { Stack, Typography } from "@mui/material";
 import { ReactElement, useContext } from "react";
 import type { NodeManager } from "../../types/nodeManager";
-import { Status } from "../../types/status";
 import { DiscoveredNodesContext } from "../Providers/ROSProvider";
 import NodeItem from "./NodeItem";
 
@@ -23,7 +22,7 @@ function NodeManager({ ...props }: NodeManager) {
         selection={props.selectedNode}
         name={node}
         key={node}
-        status={Status.OK}
+        status={nodeData[node].status}
       />,
     );
   }

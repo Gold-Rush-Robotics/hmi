@@ -14,6 +14,7 @@ import type {
 } from "../../types/rosProvider";
 import { Status } from "../../types/status";
 import config from "../../util/config";
+import { isRunning } from "../../util/status";
 import { deepCombineObjects } from "../../util/util";
 
 export const WSHistoryContext = createContext<WSHistory>({});
@@ -191,13 +192,17 @@ function ROSProvider({ ...props }) {
   }
 
   /**
-   * Updates nodes based on nodes and topics received from /node_info_pub
+   * Processes updates containing ROS node and topic information.
+   * Discovers new nodes and topics, updates internal state, and subscribes to new publishers.
    *
-   * @param update The message from /node_info_pub or data from
+   * @param update The message from the node info source. Expected JSON payload in `update.message`.
+   * @throws Error If the message payload cannot be parsed as JSON.
    */
   function checkNodeUpdates(update: RosMessage) {
+    // Initialize global status if it's unknown
     if (globalStatus === Status.Unknown) setGlobalStatus(Status.Stopped);
 
+    // Attempt to parse the incoming message string as JSON
     let data: RosNodeInfo;
     try {
       data = JSON.parse(update.message.toString());
@@ -207,17 +212,23 @@ function ROSProvider({ ...props }) {
       );
     }
 
+    // Create a set of nodes present in this update to track which ones are still online
+    const activeNodes = new Set<string>(Object.keys(data));
+
     let newDiscovered: DiscoveredNodes = {};
     for (const node in data) {
+      // Check if this node is completely new (not in our discoveredNodes state)
       if (!Object.hasOwn(discoveredNodes, node)) {
-        newDiscovered[node] = data[node];
+        newDiscovered[node] = { status: Status.OK, ...data[node] };
         continue;
       }
 
+      // If the node already exists, check for new publishers on this node
       const pubUpdates = data[node].publishers;
       const discoveredPubs = discoveredNodes[node].publishers;
       let newDiscoveredPubs: DiscoveredTopic[] = [];
       for (const publisher of pubUpdates) {
+        // Check if this specific publisher topic is already known for this node
         let found = false;
         for (const discoveredPub of discoveredPubs) {
           if (discoveredPub.topic === publisher.topic) {
@@ -225,7 +236,9 @@ function ROSProvider({ ...props }) {
             break;
           }
         }
+
         if (!found) {
+          // If the publisher topic was not found in the discovered list, it's new
           newDiscoveredPubs.push({
             topic: publisher.topic,
             type: publisher.type,
@@ -233,10 +246,12 @@ function ROSProvider({ ...props }) {
         }
       }
 
+      // Now, check for new subscribers on this node (logic is similar to publishers)
       const subUpdates = data[node].subscribers;
       const discoveredSubs = discoveredNodes[node].subscribers;
       const newDiscoveredSubs: DiscoveredTopic[] = [];
       for (const subscriber of subUpdates) {
+        // Check if this specific subscriber topic is already known for this node
         let found = false;
         for (const discoveredSub of discoveredSubs) {
           if (discoveredSub.topic === subscriber.topic) {
@@ -245,6 +260,7 @@ function ROSProvider({ ...props }) {
           }
         }
         if (!found) {
+          // If the subscriber topic was not found in the discovered list, it's new
           newDiscoveredSubs.push({
             topic: subscriber.topic,
             type: subscriber.type,
@@ -252,9 +268,13 @@ function ROSProvider({ ...props }) {
         }
       }
 
+      // If any new publishers or subscribers were found for this existing node
       if (newDiscoveredSubs.length !== 0 || newDiscoveredPubs.length !== 0) {
         const nodeData = data[node];
+        // Add the node to newDiscovered, including *only* the new pubs/subs found.
+        // Service clients/servers are included from the latest update without diffing.
         newDiscovered[node] = {
+          status: Status.OK,
           publishers: newDiscoveredPubs,
           subscribers: newDiscoveredSubs,
           service_clients: nodeData.service_clients,
@@ -263,12 +283,25 @@ function ROSProvider({ ...props }) {
       }
     }
 
-    // Nothing new found
-    if (Object.keys(newDiscovered).length === 0) return;
-
-    // Add new things!
+    // Add new things and check for nodes that have gone offline
     setDiscoveredNodes((prev) => {
       let update: DiscoveredNodes = deepCombineObjects(prev, newDiscovered);
+
+      // Check for nodes that went offline, and vice versa
+      for (const node in prev) {
+        if (isRunning(prev[node].status)) {
+          if (activeNodes.has(node)) continue;
+
+          // This node was online but is not in the current update
+          update[node] = { ...update[node], status: Status.Stopped };
+        } else {
+          if (!activeNodes.has(node)) continue;
+
+          // This node was offline but now it is included again in the current update
+          update[node] = { ...update[node], status: Status.OK };
+        }
+      }
+
       return update;
     });
 
