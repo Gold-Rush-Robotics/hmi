@@ -128,7 +128,6 @@ function ROSProvider({ ...props }) {
         `Error parsing data. Data: '${JSON.stringify(event.data)}'`,
       );
     }
-    console.log(data);
 
     if (data.op === "service_response") {
       handleServiceResponse(data, timestamp);

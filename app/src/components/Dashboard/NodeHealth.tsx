@@ -47,7 +47,6 @@ function NodeHealth({ ...props }) {
     const node = nodeHistory[nodeId];
     for (const topic in node) {
       const msgs = node[topic];
-      console.log(msgs);
       // Looping backwards (newest at end of array)
       for (let i = msgs.length - 1; i >= 0; i--) {
         const rawMsg = msgs[i];
