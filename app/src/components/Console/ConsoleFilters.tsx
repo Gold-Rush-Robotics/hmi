@@ -116,7 +116,21 @@ function ConsoleFilters({ ...props }: ConsoleFilters) {
   }
 
   return (
-    <Box sx={{ width: "100%", display: "flex", alignItems: "center" }}>
+    <Box
+      sx={{
+        width: "100%",
+        display: "flex",
+        alignItems: "center",
+        overflowX: "scroll", // Only horizontal scroll
+        overflowY: "hidden", // Prevent vertical scroll
+        "&::-webkit-scrollbar": {
+          // Chrome, Safari, newer Edge
+          display: "none",
+        },
+        msOverflowStyle: "none", // IE and Edge
+        whiteSpace: "nowrap", // Keeps content in a single line
+      }}
+    >
       {renderToggleShowButton()}
       {renderFilterChips()}
     </Box>
