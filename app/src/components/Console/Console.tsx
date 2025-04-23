@@ -16,7 +16,6 @@ function Console({ ...props }: Console) {
   const consoleTitle = props.selectedNode
     ? `Messages from "${props.selectedNode}"`
     : "Console";
-  const visibility = props.selectedNode ? undefined : { visibility: "hidden" };
   const consoleOutputRef = useRef<HTMLDivElement>(null);
   const rawSocketHistory = useContext(WSHistoryContext);
   const filteredSocketHistory = rawSocketHistory[props.selectedNode || ""];
@@ -117,7 +116,7 @@ function Console({ ...props }: Console) {
           <Typography>{consoleTitle}</Typography>
           <IconButton
             onClick={props.clearSelectedNode}
-            sx={{ borderRadius: 25, ...visibility }}
+            sx={{ borderRadius: 25 }}
           >
             <Close />
           </IconButton>
