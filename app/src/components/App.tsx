@@ -14,16 +14,23 @@ function App() {
   const { globalStatus, setGlobalStatus } = useContext(GlobalStatusContext);
 
   return (
-    <Box height="100%">
+    <Box sx={{ height: "100dvh", display: "flex", flexDirection: "column" }}>
       <NavBar status={globalStatus} setStatus={setGlobalStatus} />
-      <Grid container spacing={2}>
-        <Grid size={3}>
+      <Grid
+        container
+        spacing={0}
+        sx={{
+          flexGrow: 1, // This makes the Grid take up all remaining space
+          overflow: "hidden", // Prevents scrolling issues
+        }}
+      >
+        <Grid size={4}>
           <NodeManager
             setSelectedNode={setSelectedNode}
             selectedNode={selectedNode}
           />
         </Grid>
-        <Grid size={9} height="100%">
+        <Grid size={8} height="100%">
           <Console
             selectedNode={selectedNode}
             clearSelectedNode={() => setSelectedNode(null)}

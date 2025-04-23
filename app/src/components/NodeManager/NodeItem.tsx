@@ -42,13 +42,22 @@ function NodeItem({ ...props }: NodeItem) {
         alignItems="center"
         sx={{ width: "100%" }}
       >
-        <Stack direction="row" alignItems="center">
-          <StatusIcon
-            status={props.status}
-            sx={{ ml: 0, mr: 1, ...selectedStatusBorder }}
-          />
-          <Typography>{props.name}</Typography>
-        </Stack>
+        <StatusIcon
+          status={props.status}
+          sx={{ ml: 0, mr: 1, ...selectedStatusBorder }}
+        />
+        <Box sx={{ flexGrow: 1, flexShrink: 1, minWidth: 0 }}>
+          <Typography
+            textAlign={"left"}
+            sx={{
+              whiteSpace: "nowrap",
+              overflow: "hidden",
+              textOverflow: "ellipsis",
+            }}
+          >
+            {props.name}
+          </Typography>
+        </Box>
         <Box
           sx={{
             height: "1.25em",
@@ -58,6 +67,7 @@ function NodeItem({ ...props }: NodeItem) {
             alignContent: "center",
             margin: 0,
             padding: 0,
+            flexShrink: 0,
           }}
         >
           <ChevronRightRounded sx={{ width: 1, height: 1, color: "black" }} />
