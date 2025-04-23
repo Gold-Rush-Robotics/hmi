@@ -28,11 +28,15 @@ function NodeItem({ ...props }: NodeItem) {
       sx={{
         width: "100%",
         borderRadius: 25,
+        border: "1px solid",
+        borderColor: selected ? "black" : "gray",
         bgcolor: selected ? "#aaa" : "#eee",
         textTransform: "none", // Prevents text from being transformed to uppercase
         color: "inherit", // Keeps the original text color
         "&:hover": {
-          color: "inherit", // Maintains text color on hover
+          // Maintain colors on hover
+          color: "inherit",
+          borderColor: "inherit",
         },
       }}
     >
@@ -42,13 +46,22 @@ function NodeItem({ ...props }: NodeItem) {
         alignItems="center"
         sx={{ width: "100%" }}
       >
-        <Stack direction="row" alignItems="center">
-          <StatusIcon
-            status={props.status}
-            sx={{ ml: 0, mr: 1, ...selectedStatusBorder }}
-          />
-          <Typography>{props.name}</Typography>
-        </Stack>
+        <StatusIcon
+          status={props.status}
+          sx={{ ml: 0, mr: 1, ...selectedStatusBorder }}
+        />
+        <Box sx={{ flexGrow: 1, flexShrink: 1, minWidth: 0 }}>
+          <Typography
+            textAlign={"left"}
+            sx={{
+              whiteSpace: "nowrap",
+              overflow: "hidden",
+              textOverflow: "ellipsis",
+            }}
+          >
+            {props.name}
+          </Typography>
+        </Box>
         <Box
           sx={{
             height: "1.25em",
@@ -58,6 +71,7 @@ function NodeItem({ ...props }: NodeItem) {
             alignContent: "center",
             margin: 0,
             padding: 0,
+            flexShrink: 0,
           }}
         >
           <ChevronRightRounded sx={{ width: 1, height: 1, color: "black" }} />

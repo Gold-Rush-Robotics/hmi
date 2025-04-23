@@ -1,4 +1,4 @@
-import { Avatar, Box, Paper, Typography } from "@mui/material";
+import { Avatar, Box, Typography } from "@mui/material";
 import type { NavBar } from "../../types/navbar";
 import EStop from "./EStop";
 import StartButton from "./StartButton";
@@ -13,14 +13,13 @@ import StatusSummary from "./StatusSummary";
  */
 function NavBar({ ...props }: NavBar) {
   return (
-    <Paper
+    <Box
       sx={{
         display: "grid",
         gridTemplateColumns: "auto auto", // Two columns: left and right
         alignItems: "center",
         padding: "1rem",
         backgroundColor: "background.surface", // Use Joy UI theme background
-        mb: 2,
       }}
     >
       <Box sx={{ display: "flex", alignItems: "center" }}>
@@ -50,7 +49,7 @@ function NavBar({ ...props }: NavBar) {
         <StatusSummary status={props.status} />
         <StartButton status={props.status} setStatus={props.setStatus} />
       </Box>
-    </Paper>
+    </Box>
   );
 }
 
