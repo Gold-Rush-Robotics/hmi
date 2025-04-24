@@ -7,7 +7,11 @@ import {
   WSHistoryContext,
 } from "../Providers/ROSProvider";
 
-function NodeHealth({ ...props }) {
+/**
+ * The "Node Health" section of the dashboard; displays information about how many nodes
+ * there are, and how many topics there are.
+ */
+function NodeHealth() {
   const nodeData = useContext(DiscoveredNodesContext);
   const nodeHistory = useContext(WSHistoryContext);
   const [_, setUpdate] = useState({}); // dummy state to force update
@@ -59,10 +63,8 @@ function NodeHealth({ ...props }) {
     }
   }
 
-  /**
-   * Updates the state so that mps will still be recalculated if no new messages
-   * come in for more than 100ms
-   */
+  // Updates the state so that mps will still be recalculated if no new messages
+  // come in for more than 100ms
   useEffect(() => {
     let intervalId: number | undefined;
     if (mps > 0) {

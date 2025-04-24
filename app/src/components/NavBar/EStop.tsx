@@ -4,9 +4,10 @@ import type { EStop } from "../../types/navbar";
 import { ROSCommunicationContext } from "../Providers/ROSProvider";
 
 /**
- * Emergency Stop button to immediately send a message to ROS and stop the robot.
+ * Emergency Stop button to immediately send a message to ROS to stop the robot.
  *
- * @param props.setStatus A function to update the state if the status.
+ * @param props.style Whether the button should be large (just the "button") or
+ * small (a short but long style with text as well).
  */
 function EStop({ ...props }: EStop) {
   const send = useContext(ROSCommunicationContext);

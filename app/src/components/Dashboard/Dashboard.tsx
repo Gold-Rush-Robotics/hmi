@@ -5,6 +5,14 @@ import CurrentTask from "./CurrentTask";
 import NodeHealth from "./NodeHealth";
 import RunningTime from "./RunningTime";
 
+/**
+ * The Dashboard component renders the main layout for the application dashboard.
+ * It displays key information such as node health, current task, running time,
+ * a large E-Stop button, and a fun graphic.
+ * It organizes these elements into a two-column layout.
+ *
+ * @returns The rendered Dashboard component.
+ */
 function Dashboard({ ...props }: Dashboard) {
   return (
     <Paper

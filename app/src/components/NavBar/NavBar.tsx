@@ -7,8 +7,8 @@ import StatusSummary from "./StatusSummary";
 /**
  * The upper navigation bar of the app.
  *
- * @param props.status The current status of the robot.
- * @param props.setStatus A function to update the state if the status.
+ * @param props.status The current status history.
+ * @param props.setStatus A function to update the status history state.
  * @returns
  */
 function NavBar({ ...props }: NavBar) {
@@ -19,11 +19,11 @@ function NavBar({ ...props }: NavBar) {
         gridTemplateColumns: "auto auto", // Two columns: left and right
         alignItems: "center",
         padding: "1rem",
-        backgroundColor: "background.surface", // Use Joy UI theme background
+        backgroundColor: "background.surface",
       }}
     >
       <Box sx={{ display: "flex", alignItems: "center" }}>
-        <Avatar src="/logo192.png" sx={{ mr: 2 }} /> {/* Logo */}
+        <Avatar src="/logo192.png" sx={{ mr: 2 }} /> {/* GRR Logo */}
         <Typography variant="h4" sx={{ mr: 0.5 }}>
           GRR-inator
         </Typography>
