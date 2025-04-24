@@ -204,7 +204,6 @@ describe("ROSProvider", () => {
 
     const discoveredNodesEl = within(container).getByTestId("discovered-nodes");
     const discoveredNodes = JSON.parse(discoveredNodesEl.textContent || "");
-    console.log(discoveredNodes);
 
     expect("/hmi_com" in discoveredNodes).toBeTruthy();
     expect("/test_node" in discoveredNodes).toBeTruthy();

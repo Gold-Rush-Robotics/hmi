@@ -16,7 +16,6 @@ function Console({ ...props }: Console) {
   const consoleTitle = props.selectedNode
     ? `Console: ${props.selectedNode}`
     : "Console";
-  const visibility = props.selectedNode ? undefined : { visibility: "hidden" };
   const consoleOutputRef = useRef<HTMLDivElement>(null);
   const rawSocketHistory = useContext(WSHistoryContext);
   const filteredSocketHistory = rawSocketHistory[props.selectedNode || ""];
@@ -141,7 +140,6 @@ function Console({ ...props }: Console) {
               ":hover": {
                 borderColor: "gray",
               },
-              ...visibility,
             }}
           >
             <Close />

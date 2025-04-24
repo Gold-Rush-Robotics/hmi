@@ -1,7 +1,8 @@
 import { Check, PlayArrow } from "@mui/icons-material";
 import { IconButton } from "@mui/material";
-import { useContext, useEffect, useState } from "react";
+import { useContext } from "react";
 import type { StartButton } from "../../types/navbar";
+import { GlobalStatus } from "../../types/rosProvider";
 import { Status } from "../../types/status";
 import { isRunning } from "../../util/status";
 import { ROSCommunicationContext } from "../Providers/ROSProvider";
@@ -14,43 +15,23 @@ import { ROSCommunicationContext } from "../Providers/ROSProvider";
  */
 function StartButton({ ...props }: StartButton) {
   const send = useContext(ROSCommunicationContext);
-  const [wait, setWait] = useState(-1); // until proper implementation
-  const [disabled, setDisabled] = useState(
-    isRunning(props.status) || props.status === Status.Unknown,
-  );
+  const disabled = isRunning(props.status) || props.status === Status.Unknown;
+
   function onClick() {
-    props.setStatus(Status.Loading);
+    const loading: GlobalStatus = {
+      timestamp: new Date(),
+      status: Status.Loading,
+      extendedStatus: "Sending start message to ROS...", // Current task message
+    };
+
+    // Add new status to the history
+    props.setStatus((prev) => [...prev, loading]);
     send.publish("/hmi_start_stop", "start");
-    setDisabled(true);
-    setWait(5); // until proper implementation
   }
-
-  /**
-   * Temporary delay until this is handled in ROS.
-   */
-  useEffect(() => {
-    if (wait === 0) {
-      if (props.status === Status.Loading) {
-        props.setStatus(Status.OK);
-        setWait(-1);
-      }
-      return;
-    }
-    if (wait < 0) {
-      setDisabled(isRunning(props.status) || props.status === Status.Unknown);
-      return;
-    }
-
-    setTimeout(() => {
-      setWait((prev) => prev - 1);
-    }, 1000);
-  }, [wait, props.status]);
 
   return (
     <IconButton
-      {...(wait > -1 || props.status === Status.Unknown
-        ? { loading: true }
-        : undefined)}
+      {...(props.status === Status.Unknown ? { loading: true } : undefined)}
       onClick={onClick}
       disabled={disabled}
       sx={{
