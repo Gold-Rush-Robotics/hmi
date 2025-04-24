@@ -129,6 +129,7 @@ function ROSProvider({ ...props }) {
       );
     }
 
+    // Handlers based on the operation type
     if (data.op === "service_response") {
       handleServiceResponse(data, timestamp);
     } else if (data.op === "publish") {
@@ -151,8 +152,11 @@ function ROSProvider({ ...props }) {
       timestamp,
     };
 
-    if (data.topic == "/node_info_pub") {
+    // Topic handlers
+    if (data.topic === "/node_info_pub") {
       checkNodeUpdates(message);
+    } else if (data.topic === "/hmi_start_stop") {
+      handleHmiStartStop(message);
     }
 
     setWSHistory((prev) => {
@@ -309,6 +313,45 @@ function ROSProvider({ ...props }) {
       for (const pub of newDiscovered[node].publishers) {
         subscribe(pub.topic, pub.type);
       }
+    }
+  }
+
+  /**
+   * Processes start/stop updates. These will usually be sent out from StartButton, but
+   * this also allows for the ROS server to send messages on this topic to update the client
+   * status.
+   *
+   * @param update The message from the `/hmi_start_stop` topic. Expected JSON payload in
+   * `update.message`.
+   * @throws Error If the message payload cannot be parsed as JSON.
+   */
+  function handleHmiStartStop(update: RosMessage) {
+    // Make sure this is a string
+    const msg = update.message as unknown;
+    if (typeof msg !== "string") {
+      console.warn(
+        "Warning: '/hmi_start_stop' message received that was not a string! Not processing.",
+      );
+      console.warn("Message received:", msg);
+      return;
+    }
+
+    // Here is where we will ignore it if server-side status is setup
+
+    // Handle operations
+    switch (msg.toLowerCase()) {
+      case "start":
+        setGlobalStatus((_) => Status.OK);
+        break;
+      case "stop":
+        setGlobalStatus((_) => Status.Stopped);
+        break;
+
+      default:
+        console.warn(
+          "Skipping invalid operation received from '/hmi_start_stop':",
+          msg,
+        );
     }
   }
 
