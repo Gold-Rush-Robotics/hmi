@@ -46,7 +46,7 @@ describe("EStop", () => {
     const html = render(
       <ROSProvider>
         <ExposeROSProvider />
-        <EStop style="small" setStatus={setMockStatus} />
+        <EStop style="small" />
       </ROSProvider>,
     );
     await mockServer.connected;
@@ -59,7 +59,6 @@ describe("EStop", () => {
       expect(mockServer.messages.length).toBeGreaterThan(0);
     });
 
-    expect(setMockStatus).toHaveBeenCalled();
     expect(mockServer.messages).toContain(
       JSON.stringify({
         op: "publish",
