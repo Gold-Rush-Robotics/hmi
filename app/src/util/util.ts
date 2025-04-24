@@ -1,3 +1,5 @@
+import { differenceInSeconds } from "date-fns";
+
 type NestedObject = {
   [key: string]: any; // Allow nested objects or arrays or literally anything
 };
@@ -49,4 +51,25 @@ export function deepCombineObjects(
   }
 
   return result;
+}
+
+/**
+ * Formats the difference between 2 dates in `mm:ss` (or `HH:mm:ss` if it is over an hour difference).
+ *
+ * @param earlier The earlier date
+ * @param later The later date
+ * @returns A string in the form `mm:ss` or `HH:mm:ss` representing the difference in time between the two timestamps.
+ */
+export function formatTimeDifference(earlier: Date, later: Date) {
+  const diffInSeconds = differenceInSeconds(later, earlier);
+
+  const hours = Math.floor(diffInSeconds / 3600);
+  const minutes = Math.floor((diffInSeconds % 3600) / 60);
+  const seconds = diffInSeconds % 60;
+
+  if (hours > 0) {
+    return `${hours.toString().padStart(2, "0")}:${minutes.toString().padStart(2, "0")}:${seconds.toString().padStart(2, "0")}`;
+  } else {
+    return `${minutes.toString().padStart(2, "0")}:${seconds.toString().padStart(2, "0")}`;
+  }
 }

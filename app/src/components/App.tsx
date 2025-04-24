@@ -1,5 +1,6 @@
 import { Box, Grid2 as Grid } from "@mui/material";
 import { useContext, useState } from "react";
+import { Status } from "../types/status";
 import Console from "./Console/Console";
 import Dashboard from "./Dashboard/Dashboard";
 import NavBar from "./NavBar/NavBar";
@@ -12,11 +13,12 @@ import "/src/css/App.css";
  */
 function App() {
   const [selectedNode, setSelectedNode] = useState<string | null>(null);
-  const { globalStatus, setGlobalStatus } = useContext(GlobalStatusContext);
+  const { globalStatusHistory, setGlobalStatusHistory } =
+    useContext(GlobalStatusContext);
 
   const mainSection =
     selectedNode == null ? (
-      <Dashboard setStatus={setGlobalStatus} />
+      <Dashboard />
     ) : (
       <Console
         selectedNode={selectedNode}
@@ -26,7 +28,10 @@ function App() {
 
   return (
     <Box sx={{ height: "100dvh", display: "flex", flexDirection: "column" }}>
-      <NavBar status={globalStatus} setStatus={setGlobalStatus} />
+      <NavBar
+        status={globalStatusHistory.at(-1)?.status ?? Status.Unknown}
+        setStatus={setGlobalStatusHistory}
+      />
       <Grid
         container
         spacing={0}

@@ -2,6 +2,7 @@ import { createContext, useEffect, useRef, useState } from "react";
 import type {
   DiscoveredNodes,
   DiscoveredTopic,
+  GlobalStatus,
   GlobalStatusContextType,
   RosCommunicationContext,
   RosMessage,
@@ -20,8 +21,8 @@ import { deepCombineObjects } from "../../util/util";
 export const WSHistoryContext = createContext<WSHistory>({});
 export const DiscoveredNodesContext = createContext<DiscoveredNodes>({});
 export const GlobalStatusContext = createContext<GlobalStatusContextType>({
-  globalStatus: Status.Unknown,
-  setGlobalStatus: () => {},
+  globalStatusHistory: [],
+  setGlobalStatusHistory: () => {},
 });
 export const ROSCommunicationContext = createContext<RosCommunicationContext>({
   sendRaw: () => {},
@@ -38,7 +39,15 @@ function ROSProvider({ ...props }) {
   const rosIP = config.rosIp;
   const wsRef = useRef<WebSocket | null>(null);
   const [wsHistory, setWSHistory] = useState<WSHistory>({});
-  const [globalStatus, setGlobalStatus] = useState<Status>(Status.Unknown);
+  const [globalStatusHistory, setGlobalStatusHistory] = useState<
+    GlobalStatus[]
+  >([
+    {
+      timestamp: new Date(),
+      status: Status.Unknown,
+      extendedStatus: "Loading...",
+    },
+  ]);
   const [lastReceived, setLastReceived] = useState(new Date());
   const timeoutPollRate = 10000; // milliseconds; we should be receiving data from ROS every ~5 seconds at minimum
 
@@ -203,7 +212,15 @@ function ROSProvider({ ...props }) {
    */
   function checkNodeUpdates(update: RosMessage) {
     // Initialize global status if it's unknown
-    if (globalStatus === Status.Unknown) setGlobalStatus(Status.Stopped);
+    if (globalStatusHistory.at(-1)?.status === Status.Unknown)
+      setGlobalStatusHistory((prev) => {
+        const stopped: GlobalStatus = {
+          timestamp: new Date(),
+          status: Status.Stopped,
+          extendedStatus: "N/A",
+        };
+        return [...prev, stopped];
+      });
 
     // Attempt to parse the incoming message string as JSON
     let data: RosNodeInfo;
@@ -341,10 +358,24 @@ function ROSProvider({ ...props }) {
     // Handle operations
     switch (msg.toLowerCase()) {
       case "start":
-        setGlobalStatus((_) => Status.OK);
+        setGlobalStatusHistory((prev) => [
+          ...prev,
+          {
+            timestamp: update.timestamp,
+            status: Status.OK,
+            extendedStatus: "Running",
+          },
+        ]);
         break;
       case "stop":
-        setGlobalStatus((_) => Status.Stopped);
+        setGlobalStatusHistory((prev) => [
+          ...prev,
+          {
+            timestamp: update.timestamp,
+            status: Status.Stopped,
+            extendedStatus: "N/A",
+          },
+        ]);
         break;
 
       default:
@@ -451,7 +482,9 @@ function ROSProvider({ ...props }) {
   }
 
   return (
-    <GlobalStatusContext value={{ globalStatus, setGlobalStatus }}>
+    <GlobalStatusContext
+      value={{ globalStatusHistory, setGlobalStatusHistory }}
+    >
       <WSHistoryContext.Provider value={wsHistory}>
         <DiscoveredNodesContext.Provider value={discoveredNodes}>
           <ROSCommunicationContext.Provider

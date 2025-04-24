@@ -1,7 +1,6 @@
 import { Avatar, Button, Typography } from "@mui/material";
 import { useContext } from "react";
 import type { EStop } from "../../types/navbar";
-import { Status } from "../../types/status";
 import { ROSCommunicationContext } from "../Providers/ROSProvider";
 
 /**
@@ -14,7 +13,6 @@ function EStop({ ...props }: EStop) {
 
   function onClick() {
     send.publish("/hmi_start_stop", "stop");
-    props.setStatus(Status.Stopped);
   }
 
   if (props.style == "small")

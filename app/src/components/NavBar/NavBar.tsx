@@ -45,7 +45,7 @@ function NavBar({ ...props }: NavBar) {
           alignItems: "center",
         }}
       >
-        <EStop setStatus={props.setStatus} style={"small"} />
+        <EStop style={"small"} />
         <StatusSummary status={props.status} />
         <StartButton status={props.status} setStatus={props.setStatus} />
       </Box>

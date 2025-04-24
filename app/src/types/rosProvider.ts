@@ -65,8 +65,14 @@ export type RosNodeConnection = {
 };
 
 export type GlobalStatusContextType = {
-  globalStatus: Status;
-  setGlobalStatus: Dispatch<SetStateAction<Status>>;
+  globalStatusHistory: GlobalStatus[];
+  setGlobalStatusHistory: Dispatch<SetStateAction<GlobalStatus[]>>;
+};
+
+export type GlobalStatus = {
+  timestamp: Date;
+  status: Status;
+  extendedStatus?: string;
 };
 
 export type RosCommunicationContext = {

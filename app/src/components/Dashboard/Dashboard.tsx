@@ -41,7 +41,7 @@ function Dashboard({ ...props }: Dashboard) {
             justifyContent: "center",
           }}
         >
-          <EStop style="large" setStatus={props.setStatus} />
+          <EStop style="large" />
           <br />
           <Avatar
             src="/yes-yes-sir.gif"
