@@ -16,7 +16,7 @@ function EStop({ ...props }: EStop) {
     send.publish("/hmi_start_stop", "stop");
   }
 
-  if (props.style == "small")
+  if (props.style == "small") {
     return (
       <Button
         onClick={onClick}
@@ -33,14 +33,23 @@ function EStop({ ...props }: EStop) {
           justifyContent: "space-between",
         }}
       >
-        <Typography sx={{ fontWeight: "bold", m: 2 }}>
+        <Typography
+          sx={{
+            fontWeight: "bold",
+            m: 2,
+            textOverflow: "ellipsis",
+            whiteSpace: "nowrap",
+            overflow: "hidden",
+          }}
+        >
           EMERGENCY STOP
         </Typography>
         <Avatar src="/estop.png">STOP</Avatar>
       </Button>
     );
+  }
 
-  if (props.style == "large")
+  if (props.style == "large") {
     return (
       <Button
         onClick={onClick}
@@ -61,6 +70,7 @@ function EStop({ ...props }: EStop) {
         </Avatar>
       </Button>
     );
+  }
 }
 
 export default EStop;

@@ -21,7 +21,7 @@ function CurrentTask() {
       }}
     >
       <Typography variant="h6">Current Task</Typography>
-      <Typography>
+      <Typography sx={{ textAlign: "left" }}>
         {globalStatusHistory.at(-1)?.extendedStatus ?? "Unknown"}
       </Typography>
     </Box>

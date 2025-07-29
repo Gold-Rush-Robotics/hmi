@@ -24,13 +24,20 @@ function NavBar({ ...props }: NavBar) {
     >
       <Box sx={{ display: "flex", alignItems: "center" }}>
         <Avatar src="/logo192.png" sx={{ mr: 2 }} /> {/* GRR Logo */}
-        <Typography variant="h4" sx={{ mr: 0.5 }}>
+        <Typography
+          variant="h4"
+          sx={{
+            mr: 0.5,
+            whiteSpace: "nowrap",
+          }}
+        >
           GRR-inator
         </Typography>
         <Avatar
           src="/lil-guy.png"
           sx={{
             ml: 1,
+            mr: 2,
             borderRadius: 0,
             height: "1.5em",
             width: "1.5em",
