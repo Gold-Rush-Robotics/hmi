@@ -1,6 +1,7 @@
 import { act, cleanup, render, within } from "@testing-library/react";
 import WS from "jest-websocket-mock";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
+import config from "../../../util/config";
 import ROSProvider from "../ROSProvider";
 import { ExposeROSProvider } from "./ExposeROSProvider";
 
@@ -56,7 +57,7 @@ describe("ROSProvider", () => {
   });
 
   beforeEach(() => {
-    mockServer = new WS("ws://127.0.0.1:9090");
+    mockServer = new WS(config.rosIp);
   });
 
   it("connects to the WebSocket on mount and calls '/node_info_srv'", async () => {
