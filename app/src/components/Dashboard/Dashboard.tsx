@@ -1,4 +1,4 @@
-import { Avatar, Grid2, Paper, Typography } from "@mui/material";
+import { Avatar, Box, Grid2, Paper, Stack, Typography } from "@mui/material";
 import type { Dashboard } from "../../types/dashboard";
 import EStop from "../NavBar/EStop";
 import CurrentTask from "./CurrentTask";
@@ -20,48 +20,71 @@ function Dashboard({ ...props }: Dashboard) {
         height: "inherit",
         display: "flex",
         flexDirection: "column",
-        borderRadius: "20px 0 0 0",
+        borderRadius: "12px 0 0 0",
+        bgcolor: "background.paper",
       }}
     >
-      <Typography variant="h5" sx={{ p: 2 }}>
-        Dashboard
-      </Typography>
-      <Grid2 container spacing={2} sx={{ pb: 2 }}>
-        <Grid2
-          size={6}
+      <Box sx={{ p: 1.5, pb: 0.5 }}>
+        <Typography
+          variant="h6"
           sx={{
-            display: "flex",
-            flexDirection: "column",
-            alignItems: "flex-start",
-            pl: 2,
+            fontWeight: 600,
+            color: "text.primary",
+            mb: 0.5,
           }}
         >
-          <NodeHealth />
-          <CurrentTask />
-          <RunningTime />
-        </Grid2>
-        <Grid2
-          size={6}
-          sx={{
-            display: "flex",
-            flexDirection: "column",
-            alignItems: "center",
-            justifyContent: "center",
-          }}
-        >
-          <EStop style="large" />
-          <br />
-          <Avatar
-            src="/yes-yes-sir.gif"
+          Dashboard
+        </Typography>
+      </Box>
+
+      <Box sx={{ flex: 1, p: 1.5, pt: 0 }}>
+        <Grid2 container spacing={1.5} sx={{ height: "100%" }}>
+          <Grid2
+            size={6}
             sx={{
-              width: "150px",
-              height: "150px",
-              pt: 6,
-              borderRadius: 0,
+              display: "flex",
+              flexDirection: "column",
+              gap: 1.5,
             }}
-          />
+          >
+            <NodeHealth />
+            <CurrentTask />
+          </Grid2>
+
+          <Grid2
+            size={6}
+            sx={{
+              display: "flex",
+              flexDirection: "column",
+              gap: 1.5,
+            }}
+          >
+            <RunningTime />
+            <Stack
+              direction="row"
+              spacing={3}
+              sx={{
+                mt: 2,
+                width: "100%",
+                alignItems: "center",
+                justifyContent: "center",
+              }}
+            >
+              <EStop style="large" />
+              <Avatar
+                src="/yes-yes-sir.gif"
+                sx={{
+                  width: "100px",
+                  height: "100px",
+                  borderRadius: "8px",
+                  border: "2px solid",
+                  borderColor: "divider",
+                }}
+              />
+            </Stack>
+          </Grid2>
         </Grid2>
-      </Grid2>
+      </Box>
     </Paper>
   );
 }

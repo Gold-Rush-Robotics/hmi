@@ -58,7 +58,7 @@ function Console({ ...props }: Console) {
     // This isn't perfect but it mostly works.
     if (!autoScroll && socketHistory.length === maxHistoryLength) {
       const { current } = consoleOutputRef;
-      current.scrollTop -= 14; // 14px represents roughly 1 line
+      current.scrollTop -= 12; // 12px represents roughly 1 line
     }
   }, [socketHistory, autoScroll]);
 
@@ -96,9 +96,10 @@ function Console({ ...props }: Console) {
         return `[${format(msg.timestamp, "HH:mm:ss.SSS")}] [${msg.topic}] ${msg.message}`;
       })
       .join("\n");
-    if (text === "")
+    if (text === "") {
       text =
         "No messages received yet. Perhaps you should try changing your filters?";
+    }
     if (socketHistory.length === maxHistoryLength) {
       text = `...history limited to ${maxHistoryLength} lines\n${text}`;
     }
@@ -111,14 +112,15 @@ function Console({ ...props }: Console) {
         height: "inherit",
         display: "flex",
         flexDirection: "column",
-        borderRadius: "20px 0 0 0",
+        borderRadius: "12px 0 0 0",
       }}
     >
-      <Box sx={{ pl: 2, pr: 2, pt: 1.5 }}>
+      <Box sx={{ px: 1.5, py: 1 }}>
         <Stack
           direction="row"
           justifyContent="space-between"
           alignItems="center"
+          sx={{ mb: 1 }}
         >
           <Typography
             variant="h6"
@@ -126,6 +128,7 @@ function Console({ ...props }: Console) {
               whiteSpace: "nowrap",
               overflow: "hidden",
               textOverflow: "ellipsis",
+              fontWeight: 600,
             }}
           >
             {consoleTitle}
@@ -133,16 +136,18 @@ function Console({ ...props }: Console) {
           <IconButton
             onClick={props.clearSelectedNode}
             sx={{
-              borderRadius: 25,
+              borderRadius: 20,
               scale: 0.95,
               border: "1px solid",
-              borderColor: "lightgray",
+              borderColor: "divider",
+              bgcolor: "#404040",
               ":hover": {
-                borderColor: "gray",
+                borderColor: "primary.main",
+                bgcolor: "#505050",
               },
             }}
           >
-            <Close />
+            <Close sx={{ fontSize: "1.2rem" }} />
           </IconButton>
         </Stack>
         <ConsoleFilters
@@ -155,18 +160,24 @@ function Console({ ...props }: Console) {
         ref={consoleOutputRef}
         onScroll={checkEnableAutoScroll}
         sx={{
-          bgcolor: "#222",
-          height: "60vh",
-          color: "#eee",
+          bgcolor: "background.default",
           textAlign: "left",
           overflow: "scroll",
           flexGrow: 1,
-          borderRadius: "6px",
           m: 1,
-          p: 1,
+          p: 1.5,
         }}
       >
-        <pre style={{ margin: 0, padding: 0, whiteSpace: "pre-wrap" }}>
+        <pre
+          style={{
+            margin: 0,
+            padding: 0,
+            whiteSpace: "pre-wrap",
+            fontSize: "0.75rem",
+            lineHeight: 1.2,
+            fontFamily: "monospace",
+          }}
+        >
           {renderConsoleText()}
         </pre>
       </Paper>

@@ -55,14 +55,16 @@ function EStop({ ...props }: EStop) {
         onClick={onClick}
         variant="contained"
         sx={{
-          height: "120px",
-          width: "120px",
-          borderRadius: 25,
+          height: "100px",
+          width: "100px",
+          borderRadius: "12px",
           backgroundColor: "#fee415",
-          color: "red",
-          p: 0,
+          p: 0.5,
           alignItems: "center",
-          justifyContent: "space-between",
+          justifyContent: "center",
+          border: "3px solid",
+          borderColor: "yellow",
+          borderStyle: "outset",
         }}
       >
         <Avatar src="/estop.png" sx={{ width: "100%", height: "100%" }}>

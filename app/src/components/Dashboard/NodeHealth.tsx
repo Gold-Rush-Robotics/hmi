@@ -6,6 +6,7 @@ import {
   DiscoveredNodesContext,
   WSHistoryContext,
 } from "../Providers/ROSProvider";
+import DashboardCard from "./DashboardCard";
 
 /**
  * The "Node Health" section of the dashboard; displays information about how many nodes
@@ -80,21 +81,30 @@ function NodeHealth() {
   }, [nodeHistory]);
 
   return (
-    <Box
-      sx={{
-        display: "flex",
-        flexDirection: "column",
-        alignItems: "flex-start",
-        p: 0.5,
-      }}
-    >
-      <Typography variant="h6">Node Health</Typography>
-      <Typography>{nodeHealthData.discovered} discovered nodes</Typography>
-      <Typography sx={{ pl: 1 }}>- {nodeHealthData.running} running</Typography>
-      <Typography sx={{ pl: 1 }}>- {nodeHealthData.stopped} stopped</Typography>
-      <Typography>{nodeHealthData.topics.size} discovered topics</Typography>
-      <Typography sx={{ pl: 1 }}>- {mps} msgs/sec</Typography>
-    </Box>
+    <DashboardCard title="Node Health">
+      <Box sx={{ display: "flex", flexDirection: "column", gap: 0.25 }}>
+        {/* Discovered nodes text */}
+        <Typography sx={{ color: "text.secondary", fontSize: "0.8rem" }}>
+          {nodeHealthData.discovered} discovered nodes
+        </Typography>
+        <Typography sx={{ color: "text.secondary", fontSize: "0.75rem" }}>
+          • {nodeHealthData.running} running
+        </Typography>
+        <Typography sx={{ color: "text.secondary", fontSize: "0.75rem" }}>
+          • {nodeHealthData.stopped} stopped
+        </Typography>
+
+        {/* Discovered topics text */}
+        <Typography
+          sx={{ color: "text.secondary", fontSize: "0.8rem", mt: 0.75 }}
+        >
+          {nodeHealthData.topics.size} discovered topics
+        </Typography>
+        <Typography sx={{ color: "text.secondary", fontSize: "0.75rem" }}>
+          • {mps} msgs/sec
+        </Typography>
+      </Box>
+    </DashboardCard>
   );
 }
 

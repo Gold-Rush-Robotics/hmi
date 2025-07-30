@@ -28,7 +28,12 @@ function ConsoleFilters({ ...props }: ConsoleFilters) {
     }
 
     if (enabledChips.length + disabledChips.length === 0) {
-      return <Chip label="No topics in node!" sx={{ ml: 1 }} />;
+      return (
+        <Chip
+          label="No topics in node!"
+          sx={{ ml: 0.5, height: "28px", fontSize: "0.8rem" }}
+        />
+      );
     }
     return [...enabledChips, ...disabledChips]; // so they are organized :)
   }
@@ -46,7 +51,15 @@ function ConsoleFilters({ ...props }: ConsoleFilters) {
         <Chip
           key={topic}
           label={topic}
-          sx={{ ml: 1 }}
+          size="small"
+          sx={{
+            ml: 0.5,
+            height: "28px",
+            fontSize: "0.8rem",
+            "& .MuiChip-label": {
+              px: 1.5,
+            },
+          }}
           color="primary"
           onDelete={() => disableTopic(topic)}
           onClick={() => disableTopic(topic)}
@@ -57,7 +70,15 @@ function ConsoleFilters({ ...props }: ConsoleFilters) {
       <Chip
         key={topic}
         label={topic}
-        sx={{ ml: 1 }}
+        size="small"
+        sx={{
+          ml: 0.5,
+          height: "28px",
+          fontSize: "0.8rem",
+          "& .MuiChip-label": {
+            px: 1.5,
+          },
+        }}
         variant="outlined"
         onClick={() => enableTopic(topic)}
       />
@@ -97,10 +118,16 @@ function ConsoleFilters({ ...props }: ConsoleFilters) {
     return (
       <ToggleButton
         sx={{
-          borderRadius: 10,
-          scale: 0.85,
+          borderRadius: 8,
+          scale: 0.8,
+          height: "28px",
+          minWidth: "36px",
+          border: "1px solid",
+          borderColor: "divider",
+          bgcolor: "#404040",
           ":hover": {
-            borderColor: "gray",
+            borderColor: "primary.main",
+            bgcolor: "#505050",
           },
         }}
         size="small"
@@ -110,7 +137,7 @@ function ConsoleFilters({ ...props }: ConsoleFilters) {
           setShowFilters((prev) => !prev);
         }}
       >
-        <FilterList />
+        <FilterList sx={{ fontSize: "1rem" }} />
       </ToggleButton>
     );
   }
@@ -129,6 +156,7 @@ function ConsoleFilters({ ...props }: ConsoleFilters) {
         },
         msOverflowStyle: "none", // IE and Edge
         whiteSpace: "nowrap", // Keeps content in a single line
+        py: 0.5,
       }}
     >
       {renderToggleShowButton()}

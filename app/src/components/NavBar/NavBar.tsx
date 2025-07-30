@@ -29,6 +29,7 @@ function NavBar({ ...props }: NavBar) {
           sx={{
             mr: 0.5,
             whiteSpace: "nowrap",
+            color: "primary.main",
           }}
         >
           GRR-inator

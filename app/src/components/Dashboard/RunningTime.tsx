@@ -1,8 +1,9 @@
-import { Box, Typography } from "@mui/material";
+import { Typography } from "@mui/material";
 import { useContext } from "react";
 import { Status } from "../../types/status";
 import { isRunning } from "../../util/status";
 import { GlobalStatusContext } from "../Providers/ROSProvider";
+import DashboardCard from "./DashboardCard";
 import RunningTimeClock from "./RunningTimeClock";
 
 /**
@@ -35,21 +36,15 @@ function RunningTime() {
   const lastRunningTimestamp = getLastRunningTimestamp();
 
   return (
-    <Box
-      sx={{
-        display: "flex",
-        flexDirection: "column",
-        alignItems: "flex-start",
-        p: 0.5,
-      }}
-    >
-      <Typography variant="h6">Running Time</Typography>
+    <DashboardCard title="Running Time">
       {lastRunningTimestamp !== undefined ? (
         <RunningTimeClock timestamp={lastRunningTimestamp} />
       ) : (
-        <Typography>Not Running</Typography>
+        <Typography sx={{ color: "text.secondary", fontSize: "0.8rem" }}>
+          Not Running
+        </Typography>
       )}
-    </Box>
+    </DashboardCard>
   );
 }
 

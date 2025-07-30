@@ -17,7 +17,7 @@ function NodeItem({ ...props }: NodeItem) {
   if (selected) {
     selectedStatusBorder = {
       border: "2px solid",
-      borderColor: "#000",
+      borderColor: "divider",
       borderRadius: 25,
     };
   }
@@ -29,14 +29,13 @@ function NodeItem({ ...props }: NodeItem) {
         width: "100%",
         borderRadius: 25,
         border: "1px solid",
-        borderColor: selected ? "black" : "gray",
-        bgcolor: selected ? "#aaa" : "#eee",
+        borderColor: selected ? "primary.main" : "divider",
+        bgcolor: selected ? "primary.main" : "background.paper",
+        color: selected ? "primary.contrastText" : "text.primary",
         textTransform: "none", // Prevents text from being transformed to uppercase
-        color: "inherit", // Keeps the original text color
         "&:hover": {
-          // Maintain colors on hover
-          color: "inherit",
-          borderColor: "inherit",
+          bgcolor: selected ? "primary.dark" : "action.hover",
+          borderColor: "primary.main",
         },
       }}
     >
@@ -64,17 +63,23 @@ function NodeItem({ ...props }: NodeItem) {
         </Box>
         <Box
           sx={{
-            height: "1.25em",
-            width: "1.25em",
+            height: "1.3em",
+            width: "1.3em",
             borderRadius: 10,
-            bgcolor: "#ccc",
+            bgcolor: selected ? "primary.light" : "action.disabledBackground",
             alignContent: "center",
             margin: 0,
             padding: 0,
             flexShrink: 0,
           }}
         >
-          <ChevronRightRounded sx={{ width: 1, height: 1, color: "black" }} />
+          <ChevronRightRounded
+            sx={{
+              width: 1,
+              height: 1,
+              color: selected ? "divider" : "text.secondary",
+            }}
+          />
         </Box>
       </Stack>
     </Button>

@@ -1,6 +1,7 @@
-import { Box, Typography } from "@mui/material";
+import { Typography } from "@mui/material";
 import { useContext } from "react";
 import { GlobalStatusContext } from "../Providers/ROSProvider";
+import DashboardCard from "./DashboardCard";
 
 /**
  * "Current Task" section of the dashboard, displays the extended
@@ -12,19 +13,17 @@ function CurrentTask() {
   const { globalStatusHistory } = useContext(GlobalStatusContext);
 
   return (
-    <Box
-      sx={{
-        display: "flex",
-        flexDirection: "column",
-        alignItems: "flex-start",
-        p: 0.5,
-      }}
-    >
-      <Typography variant="h6">Current Task</Typography>
-      <Typography sx={{ textAlign: "left" }}>
+    <DashboardCard title="Current Task">
+      <Typography
+        sx={{
+          color: "text.secondary",
+          fontSize: "0.8rem",
+          lineHeight: 1.3,
+        }}
+      >
         {globalStatusHistory.at(-1)?.extendedStatus ?? "Unknown"}
       </Typography>
-    </Box>
+    </DashboardCard>
   );
 }
 

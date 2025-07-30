@@ -6,7 +6,6 @@ import Dashboard from "./Dashboard/Dashboard";
 import NavBar from "./NavBar/NavBar";
 import NodeManager from "./NodeManager/NodeManager";
 import { GlobalStatusContext } from "./Providers/ROSProvider";
-import "/src/css/App.css";
 
 /**
  * The entry point of the program.

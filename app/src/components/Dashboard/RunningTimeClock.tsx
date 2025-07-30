@@ -37,8 +37,12 @@ function RunningTimeClock({ ...props }: RunningTimeClock) {
 
   return (
     <>
-      <Typography>Started {formattedTimestamp}</Typography>
-      <Typography>Running for {timeDistance}</Typography>
+      <Typography sx={{ color: "text.secondary", fontSize: "0.8rem" }}>
+        Started {formattedTimestamp}
+      </Typography>
+      <Typography sx={{ color: "text.secondary", fontSize: "0.8rem" }}>
+        Running for {timeDistance}
+      </Typography>
     </>
   );
 }
