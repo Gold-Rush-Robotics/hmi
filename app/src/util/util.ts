@@ -73,3 +73,28 @@ export function formatTimeDifference(earlier: Date, later: Date) {
     return `${minutes.toString().padStart(2, "0")}:${seconds.toString().padStart(2, "0")}`;
   }
 }
+
+/**
+ * Formats the difference between 2 dates in an abbreviated form.
+ *
+ * @param earlier The earlier date
+ * @param later The later date
+ * @returns A string in the form `Hh Mm Ss` (no pad, only show min when min > 0)
+ */
+export function formatTimeDifferenceAbbreviated(earlier: Date, later: Date) {
+  const diffInSeconds = differenceInSeconds(later, earlier);
+
+  const hours = Math.floor(diffInSeconds / 3600);
+  const minutes = Math.floor((diffInSeconds % 3600) / 60);
+  const seconds = diffInSeconds % 60;
+
+  let result = "";
+  if (hours > 0) {
+    result += `${hours}h `;
+  }
+  if (minutes > 0) {
+    result += `${minutes}m `;
+  }
+  result += `${seconds}s`;
+  return result.trim();
+}
