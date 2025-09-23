@@ -1,3 +1,11 @@
+@font-face {
+  font-family: "Cascadia Code";
+  src: url("/fonts/CascadiaCode/CascadiaCode.woff2") format("woff2-variations");
+  font-weight: 200 700;
+  font-style: normal;
+  font-display: swap; /* This is good practice for performance */
+}
+
 body {
   margin: 0;
   font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;

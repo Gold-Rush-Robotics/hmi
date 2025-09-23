@@ -175,7 +175,7 @@ function Console({ ...props }: Console) {
             whiteSpace: "pre-wrap",
             fontSize: "0.75rem",
             lineHeight: 1.2,
-            fontFamily: "monospace",
+            fontFamily: "Cascadia Code, monospace",
           }}
         >
           {renderConsoleText()}
