@@ -12,12 +12,13 @@ function StatusSummary({ ...props }: StatusSummary) {
     <Box
       sx={{
         ml: 2,
-        bgcolor: "#eee",
+        bgcolor: "background.paper",
         paddingY: 1,
         paddingX: 2,
         borderRadius: 25,
         border: "1px solid",
-        borderColor: "gray",
+        borderColor: "divider",
+        color: "text.primary",
       }}
     >
       Status: {props.status}

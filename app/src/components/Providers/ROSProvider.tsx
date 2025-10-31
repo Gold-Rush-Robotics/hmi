@@ -2,6 +2,7 @@ import { createContext, useEffect, useRef, useState } from "react";
 import type {
   DiscoveredNodes,
   DiscoveredTopic,
+  GlobalStatus,
   GlobalStatusContextType,
   RosCommunicationContext,
   RosMessage,
@@ -13,13 +14,15 @@ import type {
   WSHistory,
 } from "../../types/rosProvider";
 import { Status } from "../../types/status";
+import config from "../../util/config";
+import { isRunning } from "../../util/status";
 import { deepCombineObjects } from "../../util/util";
 
 export const WSHistoryContext = createContext<WSHistory>({});
 export const DiscoveredNodesContext = createContext<DiscoveredNodes>({});
 export const GlobalStatusContext = createContext<GlobalStatusContextType>({
-  globalStatus: Status.Unknown,
-  setGlobalStatus: () => {},
+  globalStatusHistory: [],
+  setGlobalStatusHistory: () => {},
 });
 export const ROSCommunicationContext = createContext<RosCommunicationContext>({
   sendRaw: () => {},
@@ -33,10 +36,18 @@ export const ROSCommunicationContext = createContext<RosCommunicationContext>({
  * A global state provider for subscribing to ROS topics and keeping track of received data.
  */
 function ROSProvider({ ...props }) {
-  const rosIP: string = import.meta.env.VITE_ROS_IP || "ws://127.0.0.1:9090";
+  const rosIP = config.rosIp;
   const wsRef = useRef<WebSocket | null>(null);
   const [wsHistory, setWSHistory] = useState<WSHistory>({});
-  const [globalStatus, setGlobalStatus] = useState<Status>(Status.Unknown);
+  const [globalStatusHistory, setGlobalStatusHistory] = useState<
+    GlobalStatus[]
+  >([
+    {
+      timestamp: new Date(),
+      status: Status.Unknown,
+      extendedStatus: "Loading...",
+    },
+  ]);
   const [lastReceived, setLastReceived] = useState(new Date());
   const timeoutPollRate = 10000; // milliseconds; we should be receiving data from ROS every ~5 seconds at minimum
 
@@ -126,8 +137,8 @@ function ROSProvider({ ...props }) {
         `Error parsing data. Data: '${JSON.stringify(event.data)}'`,
       );
     }
-    console.log(data);
 
+    // Handlers based on the operation type
     if (data.op === "service_response") {
       handleServiceResponse(data, timestamp);
     } else if (data.op === "publish") {
@@ -150,8 +161,11 @@ function ROSProvider({ ...props }) {
       timestamp,
     };
 
-    if (data.topic == "/node_info_pub") {
+    // Topic handlers
+    if (data.topic === "/node_info_pub") {
       checkNodeUpdates(message);
+    } else if (data.topic === "/hmi_start_stop") {
+      handleHmiStartStop(message);
     }
 
     setWSHistory((prev) => {
@@ -190,13 +204,25 @@ function ROSProvider({ ...props }) {
   }
 
   /**
-   * Updates nodes based on nodes and topics received from /node_info_pub
+   * Processes updates containing ROS node and topic information.
+   * Discovers new nodes and topics, updates internal state, and subscribes to new publishers.
    *
-   * @param update The message from /node_info_pub or data from
+   * @param update The message from the node info source. Expected JSON payload in `update.message`.
+   * @throws Error If the message payload cannot be parsed as JSON.
    */
   function checkNodeUpdates(update: RosMessage) {
-    if (globalStatus === Status.Unknown) setGlobalStatus(Status.Stopped);
+    // Initialize global status if it's unknown
+    if (globalStatusHistory.at(-1)?.status === Status.Unknown)
+      setGlobalStatusHistory((prev) => {
+        const stopped: GlobalStatus = {
+          timestamp: new Date(),
+          status: Status.Stopped,
+          extendedStatus: "N/A",
+        };
+        return [...prev, stopped];
+      });
 
+    // Attempt to parse the incoming message string as JSON
     let data: RosNodeInfo;
     try {
       data = JSON.parse(update.message.toString());
@@ -206,17 +232,23 @@ function ROSProvider({ ...props }) {
       );
     }
 
+    // Create a set of nodes present in this update to track which ones are still online
+    const activeNodes = new Set<string>(Object.keys(data));
+
     let newDiscovered: DiscoveredNodes = {};
     for (const node in data) {
+      // Check if this node is completely new (not in our discoveredNodes state)
       if (!Object.hasOwn(discoveredNodes, node)) {
-        newDiscovered[node] = data[node];
+        newDiscovered[node] = { status: Status.OK, ...data[node] };
         continue;
       }
 
+      // If the node already exists, check for new publishers on this node
       const pubUpdates = data[node].publishers;
       const discoveredPubs = discoveredNodes[node].publishers;
       let newDiscoveredPubs: DiscoveredTopic[] = [];
       for (const publisher of pubUpdates) {
+        // Check if this specific publisher topic is already known for this node
         let found = false;
         for (const discoveredPub of discoveredPubs) {
           if (discoveredPub.topic === publisher.topic) {
@@ -224,7 +256,9 @@ function ROSProvider({ ...props }) {
             break;
           }
         }
+
         if (!found) {
+          // If the publisher topic was not found in the discovered list, it's new
           newDiscoveredPubs.push({
             topic: publisher.topic,
             type: publisher.type,
@@ -232,10 +266,12 @@ function ROSProvider({ ...props }) {
         }
       }
 
+      // Now, check for new subscribers on this node (logic is similar to publishers)
       const subUpdates = data[node].subscribers;
       const discoveredSubs = discoveredNodes[node].subscribers;
       const newDiscoveredSubs: DiscoveredTopic[] = [];
       for (const subscriber of subUpdates) {
+        // Check if this specific subscriber topic is already known for this node
         let found = false;
         for (const discoveredSub of discoveredSubs) {
           if (discoveredSub.topic === subscriber.topic) {
@@ -244,6 +280,7 @@ function ROSProvider({ ...props }) {
           }
         }
         if (!found) {
+          // If the subscriber topic was not found in the discovered list, it's new
           newDiscoveredSubs.push({
             topic: subscriber.topic,
             type: subscriber.type,
@@ -251,9 +288,13 @@ function ROSProvider({ ...props }) {
         }
       }
 
+      // If any new publishers or subscribers were found for this existing node
       if (newDiscoveredSubs.length !== 0 || newDiscoveredPubs.length !== 0) {
         const nodeData = data[node];
+        // Add the node to newDiscovered, including *only* the new pubs/subs found.
+        // Service clients/servers are included from the latest update without diffing.
         newDiscovered[node] = {
+          status: Status.OK,
           publishers: newDiscoveredPubs,
           subscribers: newDiscoveredSubs,
           service_clients: nodeData.service_clients,
@@ -262,12 +303,25 @@ function ROSProvider({ ...props }) {
       }
     }
 
-    // Nothing new found
-    if (Object.keys(newDiscovered).length === 0) return;
-
-    // Add new things!
+    // Add new things and check for nodes that have gone offline
     setDiscoveredNodes((prev) => {
       let update: DiscoveredNodes = deepCombineObjects(prev, newDiscovered);
+
+      // Check for nodes that went offline, and vice versa
+      for (const node in prev) {
+        if (isRunning(prev[node].status)) {
+          if (activeNodes.has(node)) continue;
+
+          // This node was online but is not in the current update
+          update[node] = { ...update[node], status: Status.Stopped };
+        } else {
+          if (!activeNodes.has(node)) continue;
+
+          // This node was offline but now it is included again in the current update
+          update[node] = { ...update[node], status: Status.OK };
+        }
+      }
+
       return update;
     });
 
@@ -276,6 +330,59 @@ function ROSProvider({ ...props }) {
       for (const pub of newDiscovered[node].publishers) {
         subscribe(pub.topic, pub.type);
       }
+    }
+  }
+
+  /**
+   * Processes start/stop updates. These will usually be sent out from StartButton, but
+   * this also allows for the ROS server to send messages on this topic to update the client
+   * status.
+   *
+   * @param update The message from the `/hmi_start_stop` topic. Expected JSON payload in
+   * `update.message`.
+   * @throws Error If the message payload cannot be parsed as JSON.
+   */
+  function handleHmiStartStop(update: RosMessage) {
+    // Make sure this is a string
+    const msg = update.message as unknown;
+    if (typeof msg !== "string") {
+      console.warn(
+        "Warning: '/hmi_start_stop' message received that was not a string! Not processing.",
+      );
+      console.warn("Message received:", msg);
+      return;
+    }
+
+    // Here is where we will ignore it if server-side status is setup
+
+    // Handle operations
+    switch (msg.toLowerCase()) {
+      case "start":
+        setGlobalStatusHistory((prev) => [
+          ...prev,
+          {
+            timestamp: update.timestamp,
+            status: Status.OK,
+            extendedStatus: "Running",
+          },
+        ]);
+        break;
+      case "stop":
+        setGlobalStatusHistory((prev) => [
+          ...prev,
+          {
+            timestamp: update.timestamp,
+            status: Status.Stopped,
+            extendedStatus: "N/A",
+          },
+        ]);
+        break;
+
+      default:
+        console.warn(
+          "Skipping invalid operation received from '/hmi_start_stop':",
+          msg,
+        );
     }
   }
 
@@ -375,7 +482,9 @@ function ROSProvider({ ...props }) {
   }
 
   return (
-    <GlobalStatusContext value={{ globalStatus, setGlobalStatus }}>
+    <GlobalStatusContext
+      value={{ globalStatusHistory, setGlobalStatusHistory }}
+    >
       <WSHistoryContext.Provider value={wsHistory}>
         <DiscoveredNodesContext.Provider value={discoveredNodes}>
           <ROSCommunicationContext.Provider

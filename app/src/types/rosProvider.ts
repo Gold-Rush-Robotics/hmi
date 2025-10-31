@@ -23,6 +23,7 @@ export type DiscoveredNodeInfo = {
   service_clients: DiscoveredTopic[];
   service_servers: DiscoveredTopic[];
   subscribers: DiscoveredTopic[];
+  status: Status;
 };
 
 export type DiscoveredTopic = {
@@ -64,8 +65,14 @@ export type RosNodeConnection = {
 };
 
 export type GlobalStatusContextType = {
-  globalStatus: Status;
-  setGlobalStatus: Dispatch<SetStateAction<Status>>;
+  globalStatusHistory: GlobalStatus[];
+  setGlobalStatusHistory: Dispatch<SetStateAction<GlobalStatus[]>>;
+};
+
+export type GlobalStatus = {
+  timestamp: Date;
+  status: Status;
+  extendedStatus?: string;
 };
 
 export type RosCommunicationContext = {

@@ -1,6 +1,7 @@
 import { act, cleanup, render } from "@testing-library/react";
 import WS from "jest-websocket-mock";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
+import config from "../../../util/config";
 import ROSProvider from "../../Providers/ROSProvider";
 import { ExposeROSProvider } from "../../Providers/__tests__/ExposeROSProvider";
 import EStop from "../EStop";
@@ -38,7 +39,7 @@ describe("EStop", () => {
   });
 
   beforeEach(() => {
-    mockServer = new WS("ws://127.0.0.1:9090");
+    mockServer = new WS(config.rosIp);
   });
 
   it("Sends a stop message when clicked", async () => {
@@ -46,7 +47,7 @@ describe("EStop", () => {
     const html = render(
       <ROSProvider>
         <ExposeROSProvider />
-        <EStop setStatus={setMockStatus} />
+        <EStop style="small" />
       </ROSProvider>,
     );
     await mockServer.connected;
@@ -59,7 +60,6 @@ describe("EStop", () => {
       expect(mockServer.messages.length).toBeGreaterThan(0);
     });
 
-    expect(setMockStatus).toHaveBeenCalled();
     expect(mockServer.messages).toContain(
       JSON.stringify({
         op: "publish",
