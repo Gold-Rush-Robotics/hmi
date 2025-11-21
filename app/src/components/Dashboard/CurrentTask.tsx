@@ -1,5 +1,5 @@
 import { Typography } from "@mui/material";
-import { useContext, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { formatTimeDifference } from "../../util/util";
 import { GlobalStatusContext } from "../Providers/ROSProvider";
 import DashboardCard from "./DashboardCard";
@@ -14,6 +14,20 @@ import TaskHistoryDialog from "./TaskHistoryDialog";
 function CurrentTask() {
   const { globalStatusHistory } = useContext(GlobalStatusContext);
   const [historyDialogOpen, setHistoryDialogOpen] = useState(false);
+  const [now, setNow] = useState(new Date());
+
+  // Update `now` every 100ms
+  useEffect(() => {
+    // Interval to update in 100ms (if I did every 1000ms it could be up to a second off)
+    const intervalId = setInterval(() => {
+      setNow(new Date());
+    }, 100);
+
+    // Clear interval on component refresh
+    return () => {
+      clearInterval(intervalId);
+    };
+  }, [now]);
 
   const handleOpenHistory = () => {
     setHistoryDialogOpen(true);
