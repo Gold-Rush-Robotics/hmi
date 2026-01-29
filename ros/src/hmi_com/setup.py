@@ -17,7 +17,6 @@ setup(
     maintainer_email='goldrushrobotics@gmail.com',
     description='This ROS package provides real-time insights into active ROS nodes by publishing JSON-formatted information about their publishers, subscribers, service servers, and service clients.',
     license='MIT',
-    tests_require=['pytest'],
     entry_points={
         'console_scripts': [
             "start = hmi_com.hmi_com_main:main"
