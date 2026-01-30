@@ -151,6 +151,8 @@ function Dashboard({}: Dashboard) {
           p: 1.5,
           display: "flex",
           justifyContent: "space-between",
+          alignItems: "center",
+          position: "relative",
         }}
       >
         {/* Title of the current screen */}
@@ -159,14 +161,24 @@ function Dashboard({}: Dashboard) {
           sx={{
             fontWeight: 600,
             color: "text.primary",
-            mb: 0.5,
           }}
         >
           {screens[screenIndex]}
         </Typography>
 
         {/* Pagination dots */}
-        <PageDots steps={pages} index={screenIndex} />
+        <Box
+          sx={{
+            position: "absolute",
+            left: "50%",
+            transform: "translateX(-50%)",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+          }}
+        >
+          <PageDots steps={pages} index={screenIndex} />
+        </Box>
 
         {/* Navigation buttons */}
         <Stack direction={"row"} gap={1} sx={{ alignItems: "center" }}>
