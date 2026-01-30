@@ -3,14 +3,23 @@ import { Box, Stack } from "@mui/material";
 type PageDots = {
   steps: number;
   index: number;
+  navigateFn?: (index: number) => void;
 };
 
-function PageDots({ steps, index }: PageDots) {
+/**
+ * Renders a pagination of dots, with a callback function to navigate to the clicked dot.
+ *
+ * @param steps - The number of steps to display
+ * @param index - The current index
+ * @param navigateFn - The function to navigate to the clicked dot
+ * @returns The rendered PageDots component
+ */
+function PageDots({ steps, index, navigateFn }: PageDots) {
   const dots = Array.from({ length: steps });
   return (
     <Stack
       direction="row"
-      spacing={0.5} // Space between the dots
+      spacing={0.5}
       justifyContent="center"
       alignItems="center"
       sx={{ p: 1 }}
@@ -19,20 +28,15 @@ function PageDots({ steps, index }: PageDots) {
         <Box
           key={i}
           sx={{
-            // Base size for all dots
             height: 8,
             borderRadius: 8,
             transition: "all 300ms ease",
             cursor: "pointer",
-
-            // Conditional styling for the active dot
             bgcolor: i === index ? "primary.main" : "text.disabled",
-
-            // Optionally make the active dot larger
             width: i === index ? 16 : 8,
           }}
-          // You could add an onClick handler here if the dots should be navigable
-          // onClick={() => console.log(`Clicked dot ${index}`)}
+          // Navigate to the clicked dot
+          onClick={() => navigateFn?.(i)}
         />
       ))}
     </Stack>

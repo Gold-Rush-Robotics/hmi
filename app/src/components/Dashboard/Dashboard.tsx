@@ -147,6 +147,15 @@ function Dashboard({}: Dashboard) {
     });
   }
 
+  /**
+   * Navigates to the specified index.
+   *
+   * @param index - The index to navigate to
+   */
+  function onNavigate(index: number) {
+    setScreenIndex((_prev) => index);
+  }
+
   return (
     <Paper
       sx={{
@@ -178,36 +187,44 @@ function Dashboard({}: Dashboard) {
         </Typography>
 
         {/* Pagination dots */}
-        <Box
-          sx={{
-            position: "absolute",
-            left: "50%",
-            transform: "translateX(-50%)",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-          }}
-        >
-          <PageDots steps={pages} index={screenIndex} />
-        </Box>
+        {pages > 1 && (
+          <Box
+            sx={{
+              position: "absolute",
+              left: "50%",
+              transform: "translateX(-50%)",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+            }}
+          >
+            <PageDots
+              steps={pages}
+              index={screenIndex}
+              navigateFn={onNavigate}
+            />
+          </Box>
+        )}
 
         {/* Navigation buttons */}
-        <Stack direction={"row"} gap={1} sx={{ alignItems: "center" }}>
-          <IconButton
-            onClick={onNavigateBefore}
-            size="small"
-            sx={{ bgcolor: "black" }}
-          >
-            <NavigateBefore />
-          </IconButton>
-          <IconButton
-            onClick={onNavigateNext}
-            size="small"
-            sx={{ bgcolor: "black" }}
-          >
-            <NavigateNext />
-          </IconButton>
-        </Stack>
+        {pages > 1 && (
+          <Stack direction={"row"} gap={1} sx={{ alignItems: "center" }}>
+            <IconButton
+              onClick={onNavigateBefore}
+              size="small"
+              sx={{ bgcolor: "black" }}
+            >
+              <NavigateBefore />
+            </IconButton>
+            <IconButton
+              onClick={onNavigateNext}
+              size="small"
+              sx={{ bgcolor: "black" }}
+            >
+              <NavigateNext />
+            </IconButton>
+          </Stack>
+        )}
       </Box>
 
       {/* Container for screen components */}
