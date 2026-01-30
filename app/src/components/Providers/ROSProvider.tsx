@@ -400,7 +400,6 @@ function ROSProvider({ ...props }) {
    */
   function handleRosDashboardDataMessage(message: RosMessage) {
     const data = JSON.parse(message.message as string) as RosDashboardItemData;
-    console.log("DASHBOARD DATA FROM ROS:", data);
     setDashboardData((prev) => ({
       ...prev,
       // Replace the item in the screen with what just came in

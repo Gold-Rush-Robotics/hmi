@@ -19,12 +19,12 @@ import RosCard from "./RosCard";
 import RunningTime from "./RunningTime";
 
 /**
- * The Dashboard component renders the main layout for the application dashboard.
- * It displays key information such as node health, current task, running time,
- * a large E-Stop button, and a fun graphic.
- * It automatically arranges these elements into a balanced two-column layout.
+ * The Dashboard component renders the main layout for the application dashboard,
+ * featuring a multi-screen paginated interface.
+ * * It dynamically maps data from the dashboard data context to their corresponding components,
+ * and includes default components (node health, task status, running time, E-Stop button).
  *
- * @returns The rendered Dashboard component.
+ * @returns The rendered Dashboard component with paginated layout and navigation.
  */
 function Dashboard({}: Dashboard) {
   const [screenIndex, setScreenIndex] = useState(0);
@@ -40,40 +40,8 @@ function Dashboard({}: Dashboard) {
     return a.localeCompare(b);
   });
   const pages = screens.length;
-  console.log("SCREENS:", screens);
-  console.log("DASHBOARD DATA:", dashboardData);
 
-  const screenCards = Object.values(dashboardData[screens[screenIndex]]).map(
-    (cardData) => {
-      console.log("CARD DATA:", cardData);
-      let element: ReactNode;
-      if (cardData.type === "card") {
-        element = (
-          <RosCard
-            key={cardData.id}
-            title={cardData.data.title}
-            content={cardData.data.content}
-          />
-        );
-      }
-      if (cardData.type === "bar") {
-        element = (
-          <RosBar
-            key={cardData.id}
-            title={cardData.data.title}
-            content={cardData.data.content}
-            value={cardData.data.value}
-            min={cardData.data.min}
-            max={cardData.data.max}
-          />
-        );
-      }
-      return { element, id: cardData.id };
-    },
-  );
-
-  console.log("SCREEN CARDS:", screenCards);
-
+  // Default built-in components for the dashboard
   const dashboardComponents = [
     { id: "nodeHealth", element: <NodeHealth /> },
     { id: "currentTask", element: <CurrentTask /> },
@@ -107,11 +75,44 @@ function Dashboard({}: Dashboard) {
     },
   ];
 
+  // Map the dashboard data for the current screen to the correct components
+  const screenCards = Object.values(dashboardData[screens[screenIndex]]).map(
+    (cardData) => {
+      let element: ReactNode;
+      if (cardData.type === "card") {
+        element = (
+          <RosCard
+            key={cardData.id}
+            title={cardData.data.title}
+            content={cardData.data.content}
+          />
+        );
+      }
+      if (cardData.type === "bar") {
+        element = (
+          <RosBar
+            key={cardData.id}
+            title={cardData.data.title}
+            content={cardData.data.content}
+            value={cardData.data.value}
+            min={cardData.data.min}
+            max={cardData.data.max}
+          />
+        );
+      }
+      return { element, id: cardData.id };
+    },
+  );
+
+  // Combine the screen components with the default components (default components go last)
   const components = [
     ...screenCards,
     ...(screenIndex === 0 ? dashboardComponents : []),
   ];
 
+  /**
+   * Navigates to the previous screen.
+   */
   function onNavigateBefore() {
     setScreenIndex((prev) => {
       let newIndex = prev - 1;
@@ -122,6 +123,9 @@ function Dashboard({}: Dashboard) {
     });
   }
 
+  /**
+   * Navigates to the next screen.
+   */
   function onNavigateNext() {
     setScreenIndex((prev) => {
       let newIndex = prev + 1;
@@ -149,6 +153,7 @@ function Dashboard({}: Dashboard) {
           justifyContent: "space-between",
         }}
       >
+        {/* Title of the current screen */}
         <Typography
           variant="h6"
           sx={{
@@ -159,7 +164,11 @@ function Dashboard({}: Dashboard) {
         >
           {screens[screenIndex]}
         </Typography>
+
+        {/* Pagination dots */}
         <PageDots steps={pages} index={screenIndex} />
+
+        {/* Navigation buttons */}
         <Stack direction={"row"} gap={1} sx={{ alignItems: "center" }}>
           <IconButton
             onClick={onNavigateBefore}
@@ -178,6 +187,7 @@ function Dashboard({}: Dashboard) {
         </Stack>
       </Box>
 
+      {/* Container for screen components */}
       <Box sx={{ flex: 1, p: 1.5, pt: 0 }}>
         <Box
           sx={{
