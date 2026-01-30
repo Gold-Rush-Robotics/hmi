@@ -16,6 +16,7 @@ import NodeHealth from "./NodeHealth";
 import PageDots from "./PageDots";
 import RosBar from "./RosBar";
 import RosCard from "./RosCard";
+import RosColor from "./RosColor";
 import RunningTime from "./RunningTime";
 
 /**
@@ -97,6 +98,16 @@ function Dashboard({}: Dashboard) {
             value={cardData.data.value}
             min={cardData.data.min}
             max={cardData.data.max}
+          />
+        );
+      }
+      if (cardData.type === "color") {
+        element = (
+          <RosColor
+            key={cardData.id}
+            title={cardData.data.title}
+            content={cardData.data.content}
+            color={cardData.data.color}
           />
         );
       }

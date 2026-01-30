@@ -92,20 +92,26 @@ export type RosDashboardScreenItems = {
 export type RosDashboardItemData =
   | {
       screen: string;
-      id: number;
+      id: string;
       type: "card";
       data: RosDashboardCard;
     }
   | {
       screen: string;
-      id: number;
+      id: string;
       type: "bar";
       data: RosDashboardBar;
+    }
+  | {
+      screen: string;
+      id: string;
+      type: "color";
+      data: RosDashboardColor;
     };
 
 export type RosDashboardCard = {
   title: string;
-  content: string;
+  content?: string;
 };
 
 export type RosDashboardBar = {
@@ -114,4 +120,10 @@ export type RosDashboardBar = {
   value: number;
   min: number;
   max: number;
+};
+
+export type RosDashboardColor = {
+  title: string;
+  content?: string;
+  color: string;
 };
