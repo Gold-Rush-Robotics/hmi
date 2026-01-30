@@ -5,6 +5,8 @@ import type {
   GlobalStatus,
   GlobalStatusContextType,
   RosCommunicationContext,
+  RosDashboardItemData,
+  RosDashboardScreenItems,
   RosMessage,
   RosNodeInfo,
   RosPublishResponse,
@@ -31,6 +33,9 @@ export const ROSCommunicationContext = createContext<RosCommunicationContext>({
   publish: () => {},
   subscribe: () => {},
 });
+export const ROSDashboardDataContext = createContext<RosDashboardScreenItems>(
+  {},
+);
 
 /**
  * A global state provider for subscribing to ROS topics and keeping track of received data.
@@ -48,14 +53,13 @@ function ROSProvider({ ...props }) {
       extendedStatus: "Loading...",
     },
   ]);
+  const [discoveredNodes, setDiscoveredNodes] = useState<DiscoveredNodes>({});
+  const [dashboardData, setDashboardData] = useState<RosDashboardScreenItems>({
+    Dashboard: {},
+  });
+
   const [lastReceived, setLastReceived] = useState(new Date());
   const timeoutPollRate = 10000; // milliseconds; we should be receiving data from ROS every ~5 seconds at minimum
-
-  /**
-   * Default discovered node list. Includes topics we are initially actively
-   * using or could possibly use before receiving an initial response.
-   */
-  const [discoveredNodes, setDiscoveredNodes] = useState<DiscoveredNodes>({});
 
   /**
    * All publishers present in this app. Everything in here will be registered with ROS.
@@ -166,6 +170,8 @@ function ROSProvider({ ...props }) {
       checkNodeUpdates(message);
     } else if (data.topic === "/hmi_start_stop") {
       handleHmiStartStop(message);
+    } else if (data.topic === "/hmi_dashboard_data") {
+      handleRosDashboardDataMessage(message);
     }
 
     setWSHistory((prev) => {
@@ -387,6 +393,25 @@ function ROSProvider({ ...props }) {
   }
 
   /**
+   * Processes dashboard data updates.
+   * Updates the global context of dashboard data with the latest data received.
+   *
+   * @param message The raw message from the `/hmi_dashboard_data` topic.
+   */
+  function handleRosDashboardDataMessage(message: RosMessage) {
+    const data = JSON.parse(message.message as string) as RosDashboardItemData;
+    console.log("DASHBOARD DATA FROM ROS:", data);
+    setDashboardData((prev) => ({
+      ...prev,
+      // Replace the item in the screen with what just came in
+      [data.screen]: {
+        ...prev[data.screen],
+        [data.id]: data,
+      },
+    }));
+  }
+
+  /**
    * Subscribes to the specified topic.
    *
    * @param topic The name of a topic to subscribe to (e.g. "/my_topic").
@@ -490,7 +515,9 @@ function ROSProvider({ ...props }) {
           <ROSCommunicationContext.Provider
             value={{ sendRaw, advertise, callService, publish, subscribe }}
           >
-            {props.children}
+            <ROSDashboardDataContext.Provider value={dashboardData}>
+              {props.children}
+            </ROSDashboardDataContext.Provider>
           </ROSCommunicationContext.Provider>
         </DiscoveredNodesContext.Provider>
       </WSHistoryContext.Provider>
