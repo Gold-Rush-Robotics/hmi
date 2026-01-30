@@ -118,8 +118,8 @@ export type RosDashboardBar = {
   title: string;
   content?: string;
   value: number;
-  min: number;
-  max: number;
+  min?: number;
+  max?: number;
 };
 
 export type RosDashboardColor = {
