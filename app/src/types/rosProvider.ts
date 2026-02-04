@@ -11,7 +11,7 @@ export type NodeHistory = {
 
 export type RosMessage = {
   timestamp: Date;
-  message: object;
+  message: object | string;
 };
 
 export type DiscoveredNodes = {
@@ -81,4 +81,49 @@ export type RosCommunicationContext = {
   callService: (service: string, args?: object[]) => void;
   publish: (topic: string, msg: object | string) => void;
   subscribe: (topic: string, type: RosType) => void;
+};
+
+export type RosDashboardScreenItems = {
+  [screen: string]: {
+    [item: string]: RosDashboardItemData;
+  };
+};
+
+export type RosDashboardItemData =
+  | {
+      screen: string;
+      id: string;
+      type: "card";
+      data: RosDashboardCard;
+    }
+  | {
+      screen: string;
+      id: string;
+      type: "bar";
+      data: RosDashboardBar;
+    }
+  | {
+      screen: string;
+      id: string;
+      type: "color";
+      data: RosDashboardColor;
+    };
+
+export type RosDashboardCard = {
+  title: string;
+  content?: string;
+};
+
+export type RosDashboardBar = {
+  title: string;
+  content?: string;
+  value: number;
+  min?: number;
+  max?: number;
+};
+
+export type RosDashboardColor = {
+  title: string;
+  content?: string;
+  color: string;
 };

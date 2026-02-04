@@ -6,12 +6,23 @@ type NestedObject = {
 
 /**
  * Deeply combines two objects, merging nested objects and arrays.
+ * When keys are identical, the second object (obj2) takes precedence and overwrites
+ * values from the first object (obj1) for primitive values. Nested objects are
+ * recursively merged, and arrays are combined and deduplicated.
  *
  * @param {NestedObject} obj1 The first object to combine.
- * @param {NestedObject} obj2 The second object to combine.
+ * @param {NestedObject} obj2 The second object to combine (takes precedence for identical keys).
  * @returns {NestedObject} The combined object.
  *
  * @example
+ * // Simple example: obj2 overwrites obj1 for identical keys
+ * const obj1 = { a: 1, b: { c: 2 } };
+ * const obj2 = { a: 10, b: { d: 3 } };
+ * const combined = deepCombineObjects(obj1, obj2);
+ * // combined: { a: 10, b: { c: 2, d: 3 } }
+ *
+ * @example
+ * // Complex example with nested objects and arrays
  * const obj1 = { a: { b: { c: { list: ['x', 'y'] }, d: 1 }, e: 2 }, f: ['g', 'h'] };
  * const obj2 = { a: { b: { c: { list: ['y', 'z'] }, e: 3 }, i: 4 }, f: ['h', 'i'], j: 5 };
  * const combined = deepCombineObjects(obj1, obj2);
