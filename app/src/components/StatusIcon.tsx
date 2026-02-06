@@ -1,5 +1,6 @@
 import { Circle } from "@mui/icons-material";
-import { CircularProgress, SxProps } from "@mui/material";
+import { CircularProgress } from "@mui/material";
+import type { SxProps } from "@mui/material";
 import { Status, StatusColors, type StatusIcon } from "../types/status";
 
 /**

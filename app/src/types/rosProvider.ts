@@ -1,93 +1,84 @@
-import { Dispatch, SetStateAction } from "react";
-import { Status } from "./status";
+import type { Dispatch, SetStateAction } from "react";
+import type { Status } from "./status";
 
-export type WSHistory = {
-  [key: string]: NodeHistory;
-};
+export type WSHistory = Record<string, NodeHistory>;
 
-export type NodeHistory = {
-  [key: string]: RosMessage[];
-};
+export type NodeHistory = Record<string, RosMessage[]>;
 
-export type RosMessage = {
+export interface RosMessage {
   timestamp: Date;
   message: object | string;
-};
+}
 
-export type DiscoveredNodes = {
-  [key: string]: DiscoveredNodeInfo;
-};
+export type DiscoveredNodes = Record<string, DiscoveredNodeInfo>;
 
-export type DiscoveredNodeInfo = {
+export interface DiscoveredNodeInfo {
   publishers: DiscoveredTopic[];
   service_clients: DiscoveredTopic[];
   service_servers: DiscoveredTopic[];
   subscribers: DiscoveredTopic[];
   status: Status;
-};
+}
 
-export type DiscoveredTopic = {
+export interface DiscoveredTopic {
   topic: string;
   type: RosType;
-};
+}
 
-export type RosType = "std_msgs/msg/String" | string;
+export type RosType = string;
 
 export type RosResponse = RosPublishResponse | RosServiceRespone;
 
-export type RosPublishResponse = {
+export interface RosPublishResponse {
   op: "publish";
   topic: string;
-  msg: any;
-};
+  msg: unknown;
+}
 
-export type RosServiceRespone = {
+export interface RosServiceRespone {
   op: "service_response";
   service: RosType;
-  values: undefined | object;
+  values: unknown;
   result: boolean;
-};
+}
 
-export type RosNodeInfo = {
-  [key: string]: RosNodeConnections;
-};
+export type RosNodeInfo = Record<string, RosNodeConnections>;
 
-export type RosNodeConnections = {
+export interface RosNodeConnections {
   publishers: RosNodeConnection[];
   service_clients: RosNodeConnection[];
   service_servers: RosNodeConnection[];
   subscribers: RosNodeConnection[];
-};
+}
 
-export type RosNodeConnection = {
+export interface RosNodeConnection {
   topic: string;
   type: string;
-};
+}
 
-export type GlobalStatusContextType = {
+export interface GlobalStatusContextType {
   globalStatusHistory: GlobalStatus[];
   setGlobalStatusHistory: Dispatch<SetStateAction<GlobalStatus[]>>;
-};
+}
 
-export type GlobalStatus = {
+export interface GlobalStatus {
   timestamp: Date;
   status: Status;
   extendedStatus?: string;
-};
+}
 
-export type RosCommunicationContext = {
+export interface RosCommunicationContext {
   sendRaw: (message: object) => void;
   advertise: (topic: string, type: string) => void;
   callService: (service: string, args?: object[]) => void;
   publish: (topic: string, msg: object | string) => void;
   subscribe: (topic: string, type: RosType) => void;
-};
+}
 
-export type RosDashboardScreenItems = {
-  [screen: string]: {
-    [item: string]: RosDashboardItemData;
-  };
-};
+export type RosDashboardScreenItems = Record<
+  string,
+  Record<string, RosDashboardItemData>
+>;
 
 export type RosDashboardItemData =
   | {
@@ -109,21 +100,21 @@ export type RosDashboardItemData =
       data: RosDashboardColor;
     };
 
-export type RosDashboardCard = {
+export interface RosDashboardCard {
   title: string;
   content?: string;
-};
+}
 
-export type RosDashboardBar = {
+export interface RosDashboardBar {
   title: string;
   content?: string;
   value: number;
   min?: number;
   max?: number;
-};
+}
 
-export type RosDashboardColor = {
+export interface RosDashboardColor {
   title: string;
   content?: string;
   color: string;
-};
+}

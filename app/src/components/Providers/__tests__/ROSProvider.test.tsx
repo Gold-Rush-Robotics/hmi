@@ -1,6 +1,7 @@
 import { act, cleanup, render, within } from "@testing-library/react";
 import WS from "jest-websocket-mock";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
+import type { DiscoveredNodes, WSHistory } from "../../../types/rosProvider";
 import config from "../../../util/config";
 import ROSProvider from "../ROSProvider";
 import { ExposeROSProvider } from "./ExposeROSProvider";
@@ -93,12 +94,14 @@ describe("ROSProvider", () => {
 
     // Make sure that stuff is being added to discovered nodes context
     const discoveredNodesEl = within(container).getByTestId("discovered-nodes");
-    const discoveredNodes = JSON.parse(discoveredNodesEl.textContent || "");
+    const discoveredNodes = JSON.parse(
+      discoveredNodesEl.textContent ?? "",
+    ) as DiscoveredNodes;
     expect("/hmi_com" in discoveredNodes).toBeTruthy();
     expect("/test_node" in discoveredNodes).toBeTruthy();
     expect("/another_node" in discoveredNodes).toBeTruthy();
-    expect(discoveredNodes["/test_node"].length === 2);
-    expect(discoveredNodes["/another_node"].length === 1);
+    expect(discoveredNodes["/test_node"].publishers.length === 2);
+    expect(discoveredNodes["/another_node"].publishers.length === 1);
     expect(discoveredNodesEl.textContent).contains("/node_info_pub");
     expect(discoveredNodesEl.textContent).contains("/test_topic");
     expect(discoveredNodesEl.textContent).contains("/test_topic2");
@@ -148,7 +151,7 @@ describe("ROSProvider", () => {
     );
 
     const wsHistoryEl = within(container).getByTestId("ws-history");
-    const wsHistory = JSON.parse(wsHistoryEl.textContent || "");
+    const wsHistory = JSON.parse(wsHistoryEl.textContent ?? "") as WSHistory;
 
     expect("/unknown" in wsHistory).toBeTruthy();
     expect("/test_topic" in wsHistory["/unknown"]).toBeTruthy();
@@ -163,26 +166,26 @@ describe("ROSProvider", () => {
     );
     await mockServer.connected;
 
-    await expect(async () => {
+    expect(() => {
       mockServer.send("This should not be a string!");
-    }).rejects.toThrowError();
+    }).toThrowError();
 
-    await expect(async () => {
+    expect(() => {
       mockServer.send(
         JSON.stringify({
           // has no data
         }),
       );
-    }).rejects.toThrowError();
+    }).toThrowError();
 
-    await expect(async () => {
+    expect(() => {
       mockServer.send(
         JSON.stringify({
           topic: "/node_info_pub",
           msg: "should not be a string!",
         }),
       );
-    }).rejects.toThrowError();
+    }).toThrowError();
   });
 
   it("doesn't overwrite previous nodes when nodes aren't shown by node_info pub/srv anymore", async () => {
@@ -204,7 +207,9 @@ describe("ROSProvider", () => {
     );
 
     const discoveredNodesEl = within(container).getByTestId("discovered-nodes");
-    const discoveredNodes = JSON.parse(discoveredNodesEl.textContent || "");
+    const discoveredNodes = JSON.parse(
+      discoveredNodesEl.textContent ?? "",
+    ) as DiscoveredNodes;
 
     expect("/hmi_com" in discoveredNodes).toBeTruthy();
     expect("/test_node" in discoveredNodes).toBeTruthy();

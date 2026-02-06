@@ -1,5 +1,6 @@
 import { ChevronRightRounded } from "@mui/icons-material";
-import { Box, Button, Stack, SxProps, Typography } from "@mui/material";
+import { Box, Button, Stack, Typography } from "@mui/material";
+import type { SxProps } from "@mui/material";
 import type { NodeItem } from "../../types/nodeManager";
 import StatusIcon from "../StatusIcon";
 

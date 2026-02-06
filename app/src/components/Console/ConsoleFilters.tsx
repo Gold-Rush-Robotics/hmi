@@ -19,8 +19,8 @@ function ConsoleFilters({ ...props }: ConsoleFilters) {
    */
   function renderFilterChips() {
     if (!showFilters) return;
-    let enabledChips = [];
-    let disabledChips = [];
+    const enabledChips = [];
+    const disabledChips = [];
     for (const [topic, enabled] of props.topicMap) {
       const chip = getChip(topic, enabled);
       if (enabled) enabledChips.push(chip);
@@ -103,7 +103,7 @@ function ConsoleFilters({ ...props }: ConsoleFilters) {
    */
   function enableTopic(topic: string) {
     props.setDisabledTopics((prev) => {
-      let update = [...prev];
+      const update = [...prev];
       update.splice(update.indexOf(topic), 1);
       return update;
     });

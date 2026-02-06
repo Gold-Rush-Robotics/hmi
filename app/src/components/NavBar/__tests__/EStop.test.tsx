@@ -24,7 +24,7 @@ describe("EStop", () => {
       service_servers: [],
     },
   };
-  const mockNodes = {
+  const _mockNodes = {
     topic: "/node_info_publisher",
     msg: {
       data: JSON.stringify(mockNodeMsgData),
@@ -43,7 +43,7 @@ describe("EStop", () => {
   });
 
   it("Sends a stop message when clicked", async () => {
-    const setMockStatus = vi.fn();
+    const _setMockStatus = vi.fn();
     const html = render(
       <ROSProvider>
         <ExposeROSProvider />

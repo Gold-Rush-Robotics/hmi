@@ -1,21 +1,21 @@
-import { Dispatch, SetStateAction } from "react";
-import { GlobalStatus } from "./rosProvider";
-import { Status } from "./status";
+import type { Dispatch, SetStateAction } from "react";
+import type { GlobalStatus } from "./rosProvider";
+import type { Status } from "./status";
 
-export type StatusSummary = {
+export interface StatusSummary {
   status: Status;
-};
+}
 
-export type StartButton = {
-  status: Status;
-  setStatus: Dispatch<SetStateAction<GlobalStatus[]>>;
-};
-
-export type NavBar = {
+export interface StartButton {
   status: Status;
   setStatus: Dispatch<SetStateAction<GlobalStatus[]>>;
-};
+}
 
-export type EStop = {
+export interface NavBar {
+  status: Status;
+  setStatus: Dispatch<SetStateAction<GlobalStatus[]>>;
+}
+
+export interface EStop {
   style: "large" | "small";
-};
+}

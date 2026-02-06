@@ -2,7 +2,7 @@ import { Check, PlayArrow } from "@mui/icons-material";
 import { IconButton } from "@mui/material";
 import { useContext } from "react";
 import type { StartButton } from "../../types/navbar";
-import { GlobalStatus } from "../../types/rosProvider";
+import type { GlobalStatus } from "../../types/rosProvider";
 import { Status } from "../../types/status";
 import { isRunning } from "../../util/status";
 import { ROSCommunicationContext } from "../Providers/ROSProvider";

@@ -1,6 +1,6 @@
 import { ChevronRightRounded } from "@mui/icons-material";
 import { Box, ButtonBase, Chip, Paper, Stack, Typography } from "@mui/material";
-import { ReactNode } from "react";
+import type { ReactNode } from "react";
 
 interface DashboardCardProps {
   title: string;
@@ -53,6 +53,7 @@ function DashboardCard({ title, children, action }: DashboardCardProps) {
             label={action.label}
             size="small"
             deleteIcon={<ChevronRightRounded />} // hack for right-aligned icon
+            // eslint-disable-next-line @typescript-eslint/no-empty-function
             onDelete={() => {}} // hack for right-aligned icon
             onClick={action.onClick}
             sx={{ fontSize: "0.75rem", height: 24, pl: 0.5, pr: 0.3 }}

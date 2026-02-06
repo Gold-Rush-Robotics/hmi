@@ -1,8 +1,19 @@
 import { differenceInSeconds } from "date-fns";
 
-type NestedObject = {
-  [key: string]: any; // Allow nested objects or arrays or literally anything
-};
+type NestedObject = Record<string, unknown>; // Allow nested objects or arrays or literally anything
+
+/**
+ * Creates a function that throws an error when called, useful for React context defaults.
+ * This helps catch cases where context is used outside of its provider.
+ *
+ * @param fnName The name of the function that was called (for error message)
+ * @returns A function that throws an error when called
+ */
+export function throwNotInProvider(fnName: string) {
+  return () => {
+    throw new Error(`${fnName} must be used within a ROSProvider`);
+  };
+}
 
 /**
  * Deeply combines two objects, merging nested objects and arrays.
@@ -28,35 +39,39 @@ type NestedObject = {
  * const combined = deepCombineObjects(obj1, obj2);
  * // combined: { a: { b: { c: { list: [ 'x', 'y', 'z' ] }, d: 1, e: 3 }, e: 2, i: 4 }, f: [ 'g', 'h', 'i' ], j: 5 }
  */
-export function deepCombineObjects(
-  obj1: NestedObject,
+export function deepCombineObjects<T extends NestedObject>(
+  obj1: T,
   obj2: NestedObject,
-): NestedObject {
-  const result: NestedObject = { ...obj1 };
+): T {
+  const result = { ...obj1 };
 
   for (const key in obj2) {
-    if (obj2.hasOwnProperty(key)) {
+    if (Object.prototype.hasOwnProperty.call(obj2, key)) {
+      const keyStr = key as keyof T;
       if (
-        result.hasOwnProperty(key) &&
-        typeof result[key] === "object" &&
-        result[key] !== null &&
+        Object.prototype.hasOwnProperty.call(result, key) &&
+        typeof result[keyStr] === "object" &&
+        result[keyStr] !== null &&
         typeof obj2[key] === "object" &&
         obj2[key] !== null
       ) {
-        if (Array.isArray(result[key]) && Array.isArray(obj2[key])) {
+        if (Array.isArray(result[keyStr]) && Array.isArray(obj2[key])) {
           // Combine arrays and remove duplicates
-          const combinedArray = [...result[key], ...obj2[key]];
-          result[key] = [...new Set(combinedArray)];
+          const combinedArray = [
+            ...(result[keyStr] as unknown[]),
+            ...(obj2[key] as unknown[]),
+          ];
+          (result[keyStr] as unknown) = [...new Set(combinedArray)];
         } else {
           // Recursive deep combine for objects
-          result[key] = deepCombineObjects(
-            result[key] as NestedObject,
+          (result[keyStr] as unknown) = deepCombineObjects(
+            result[keyStr] as NestedObject,
             obj2[key] as NestedObject,
           );
         }
       } else {
         // Simple assignment for non-object/array cases
-        result[key] = obj2[key];
+        (result[keyStr] as unknown) = obj2[key];
       }
     }
   }

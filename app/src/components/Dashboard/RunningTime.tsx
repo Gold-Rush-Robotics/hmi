@@ -12,7 +12,6 @@ import RunningTimeClock from "./RunningTimeClock";
  */
 function RunningTime() {
   const { globalStatusHistory } = useContext(GlobalStatusContext);
-  const now = new Date();
 
   function getLastRunningTimestamp() {
     // Check the earliest state it was running in since the last time it was stopped

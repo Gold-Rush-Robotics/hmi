@@ -1,5 +1,5 @@
 import { Typography } from "@mui/material";
-import { RosDashboardCard } from "../../types/rosProvider";
+import type { RosDashboardCard } from "../../types/rosProvider";
 import DashboardCard from "./DashboardCard";
 
 function RosCard({ title, content }: RosDashboardCard) {

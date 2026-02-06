@@ -18,15 +18,15 @@ function Console({ ...props }: Console) {
     : "Console";
   const consoleOutputRef = useRef<HTMLDivElement>(null);
   const rawSocketHistory = useContext(WSHistoryContext);
-  const filteredSocketHistory = rawSocketHistory[props.selectedNode || ""];
+  const filteredSocketHistory = rawSocketHistory[props.selectedNode ?? ""];
   const [disabledTopics, setDisabledTopics] = useState<string[]>(["/rosout"]);
-  let socketHistory: RosConsoleMessage[] = [];
   const [autoScroll, setAutoScroll] = useState(true);
   const maxHistoryLength = 1000; // in lines
 
   // key = topic, value = enabled (t/f)
-  let topics = new Map<string, boolean>();
+  const topics = new Map<string, boolean>();
 
+  let socketHistory: RosConsoleMessage[] = [];
   for (const topic in filteredSocketHistory) {
     const enabled = !disabledTopics.includes(topic);
     topics.set(topic, enabled);
@@ -60,7 +60,7 @@ function Console({ ...props }: Console) {
       const { current } = consoleOutputRef;
       current.scrollTop -= 12; // 12px represents roughly 1 line
     }
-  }, [socketHistory, autoScroll]);
+  }, [socketHistory.length, autoScroll]);
 
   /**
    * Checks if auto scrolling should be enabled by checking if the user is at the bottom
@@ -93,7 +93,11 @@ function Console({ ...props }: Console) {
   function renderConsoleText() {
     let text = socketHistory
       .map((msg) => {
-        return `[${format(msg.timestamp, "HH:mm:ss.SSS")}] [${msg.topic}] ${msg.message}`;
+        const messageStr =
+          typeof msg.message === "string"
+            ? msg.message
+            : JSON.stringify(msg.message);
+        return `[${format(msg.timestamp, "HH:mm:ss.SSS")}] [${msg.topic}] ${messageStr}`;
       })
       .join("\n");
     if (text === "") {

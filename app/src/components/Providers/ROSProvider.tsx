@@ -18,20 +18,20 @@ import type {
 import { Status } from "../../types/status";
 import config from "../../util/config";
 import { isRunning } from "../../util/status";
-import { deepCombineObjects } from "../../util/util";
+import { deepCombineObjects, throwNotInProvider } from "../../util/util";
 
 export const WSHistoryContext = createContext<WSHistory>({});
 export const DiscoveredNodesContext = createContext<DiscoveredNodes>({});
 export const GlobalStatusContext = createContext<GlobalStatusContextType>({
   globalStatusHistory: [],
-  setGlobalStatusHistory: () => {},
+  setGlobalStatusHistory: throwNotInProvider("setGlobalStatusHistory"),
 });
 export const ROSCommunicationContext = createContext<RosCommunicationContext>({
-  sendRaw: () => {},
-  advertise: () => {},
-  callService: () => {},
-  publish: () => {},
-  subscribe: () => {},
+  sendRaw: throwNotInProvider("sendRaw"),
+  advertise: throwNotInProvider("advertise"),
+  callService: throwNotInProvider("callService"),
+  publish: throwNotInProvider("publish"),
+  subscribe: throwNotInProvider("subscribe"),
 });
 export const ROSDashboardDataContext = createContext<RosDashboardScreenItems>(
   {},
@@ -58,8 +58,8 @@ function ROSProvider({ ...props }) {
     Dashboard: {},
   });
 
-  const [lastReceived, setLastReceived] = useState(new Date());
-  const timeoutPollRate = 10000; // milliseconds; we should be receiving data from ROS every ~5 seconds at minimum
+  const [_lastReceived, setLastReceived] = useState(new Date());
+  const _timeoutPollRate = 10000; // milliseconds; we should be receiving data from ROS every ~5 seconds at minimum
 
   /**
    * All publishers present in this app. Everything in here will be registered with ROS.
@@ -135,8 +135,8 @@ function ROSProvider({ ...props }) {
 
     let data: RosResponse;
     try {
-      data = JSON.parse(event.data) as RosResponse;
-    } catch (e) {
+      data = JSON.parse(event.data as string) as RosResponse;
+    } catch (_e) {
       throw new Error(
         `Error parsing data. Data: '${JSON.stringify(event.data)}'`,
       );
@@ -161,7 +161,7 @@ function ROSProvider({ ...props }) {
   function handleTopicResponse(data: RosPublishResponse, timestamp: Date) {
     const node = findTopicParent(data.topic);
     const message: RosMessage = {
-      message: data.msg.data,
+      message: (data.msg as { data: object }).data,
       timestamp,
     };
 
@@ -180,7 +180,7 @@ function ROSProvider({ ...props }) {
       if (prev[node] && prev[node][data.topic]?.at(-1) === message) return prev;
 
       // Merge new with old
-      let update = { ...prev };
+      const update = { ...prev };
       update[node] = {
         ...prev[node],
         [data.topic]: [...(prev[node]?.[data.topic] ?? []), message],
@@ -197,8 +197,13 @@ function ROSProvider({ ...props }) {
    * @param timestamp The timestamp the response was received at.
    */
   function handleServiceResponse(response: RosServiceRespone, timestamp: Date) {
-    const values: any = response.values ?? {};
-    const data = values.data;
+    const values: unknown = response.values;
+    if (!values) {
+      console.warn("No values found in service response:", response);
+      return;
+    }
+
+    const data = (values as { data: object }).data;
     const message: RosMessage = {
       timestamp,
       message: data,
@@ -231,17 +236,22 @@ function ROSProvider({ ...props }) {
     // Attempt to parse the incoming message string as JSON
     let data: RosNodeInfo;
     try {
-      data = JSON.parse(update.message.toString());
+      const messageStr =
+        typeof update.message === "string"
+          ? update.message
+          : JSON.stringify(update.message);
+      data = JSON.parse(messageStr) as RosNodeInfo;
     } catch (e) {
+      const errorMsg = e instanceof Error ? e.message : String(e);
       throw new Error(
-        `Error parsing node info. Data: '${JSON.stringify(update.message)}. Error: ${e}'`,
+        `Error parsing node info. Data: '${JSON.stringify(update.message)}. Error: ${errorMsg}'`,
       );
     }
 
     // Create a set of nodes present in this update to track which ones are still online
     const activeNodes = new Set<string>(Object.keys(data));
 
-    let newDiscovered: DiscoveredNodes = {};
+    const newDiscovered: DiscoveredNodes = {};
     for (const node in data) {
       // Check if this node is completely new (not in our discoveredNodes state)
       if (!Object.hasOwn(discoveredNodes, node)) {
@@ -252,7 +262,7 @@ function ROSProvider({ ...props }) {
       // If the node already exists, check for new publishers on this node
       const pubUpdates = data[node].publishers;
       const discoveredPubs = discoveredNodes[node].publishers;
-      let newDiscoveredPubs: DiscoveredTopic[] = [];
+      const newDiscoveredPubs: DiscoveredTopic[] = [];
       for (const publisher of pubUpdates) {
         // Check if this specific publisher topic is already known for this node
         let found = false;
@@ -311,7 +321,7 @@ function ROSProvider({ ...props }) {
 
     // Add new things and check for nodes that have gone offline
     setDiscoveredNodes((prev) => {
-      let update: DiscoveredNodes = deepCombineObjects(prev, newDiscovered);
+      const update = deepCombineObjects(prev, newDiscovered);
 
       // Check for nodes that went offline, and vice versa
       for (const node in prev) {
@@ -449,7 +459,9 @@ function ROSProvider({ ...props }) {
   function sendRaw(message: object) {
     const socket = wsRef.current;
     if (!socket) {
-      throw new Error(`Socket is null! Unable to send message:\n${message}.`);
+      throw new Error(
+        `Socket is null! Unable to send message:\n${JSON.stringify(message)}.`,
+      );
     }
     socket.send(JSON.stringify(message));
   }
