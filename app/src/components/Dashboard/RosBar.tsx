@@ -1,5 +1,5 @@
 import { LinearProgress, Typography } from "@mui/material";
-import { RosDashboardBar } from "../../types/rosProvider";
+import type { RosDashboardBar } from "../../types/rosProvider";
 import DashboardCard from "./DashboardCard";
 
 function RosCard({ title, content, value, min = 0, max = 1 }: RosDashboardBar) {

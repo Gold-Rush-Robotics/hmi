@@ -7,8 +7,8 @@ import {
   Stack,
   Typography,
 } from "@mui/material";
-import { ReactNode, useContext, useState } from "react";
-import type { Dashboard } from "../../types/dashboard";
+import { useContext, useState } from "react";
+import type { ReactNode } from "react";
 import EStop from "../NavBar/EStop";
 import { ROSDashboardDataContext } from "../Providers/ROSProvider";
 import CurrentTask from "./CurrentTask";
@@ -27,7 +27,7 @@ import RunningTime from "./RunningTime";
  *
  * @returns The rendered Dashboard component with paginated layout and navigation.
  */
-function Dashboard({}: Dashboard) {
+function Dashboard() {
   const [screenIndex, setScreenIndex] = useState(0);
   const dashboardData = useContext(ROSDashboardDataContext);
   const screens = Object.keys(dashboardData).sort((a, b) => {

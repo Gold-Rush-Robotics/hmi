@@ -1,17 +1,17 @@
-import { Dispatch, SetStateAction } from "react";
-import { RosMessage } from "./rosProvider";
+import type { Dispatch, SetStateAction } from "react";
+import type { RosMessage } from "./rosProvider";
 
-export type Console = {
+export interface Console {
   selectedNode: string | null;
   clearSelectedNode: VoidFunction;
-};
+}
 
-export type RosConsoleMessage = RosMessage & {
+export interface RosConsoleMessage extends RosMessage {
   topic: string;
-};
+}
 
-export type ConsoleFilters = {
+export interface ConsoleFilters {
   topicMap: Map<string, boolean>;
   disabledTopics: string[];
   setDisabledTopics: Dispatch<SetStateAction<string[]>>;
-};
+}

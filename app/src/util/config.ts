@@ -1,6 +1,7 @@
 import Ajv from "ajv";
 import uncheckedConfig from "../../config/main.yaml";
-import { AppConfig, schema } from "../types/config";
+import type { AppConfig } from "../types/config";
+import { schema } from "../types/config";
 
 const ajv = new Ajv();
 const validate = ajv.compile(schema);

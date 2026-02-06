@@ -106,19 +106,15 @@ yarn dev # Starts the development server
 To be able to pass CI and merge pull requests, code has to be formatted properly and all tests must pass. For convenience, these commands have been added to package.json:
 
 ```bash
-yarn format # Formats code with prettier
-yarn format:check # Checks if any files contain formatting issues without writing anything
+yarn lint # Checks for linting issues and code formatting
 yarn test # Runs all tests and outputs results
 yarn coverage # Outputs overall coverage of tests
 ```
 
 > [!NOTE]
-> Running tests, particularly for the first time, may take some time. This is normal, and will be optimized #soon.
+> Formatting is handled automatically through ESLint with Prettier integration. The `lint` command will check both code style and formatting. To format files directly, you can use `yarn prettier --write .` or configure your editor to format on save with the prettier extension.
 
 Additionally, if you are using VSCode, there are extensions that will help with this. [Prettier](https://marketplace.visualstudio.com/items?itemName=esbenp.prettier-vscode) can be configured to format your code on save and [Vitest](https://marketplace.visualstudio.com/items?itemName=vitest.explorer) will run your tests and give you inline coverage.
-
-> [!NOTE]
-> As of writing, the latest version of Vitest appears to be unstable. It's recommended to install v1.14.3 (next to install: manage (settings icon) > install specific version) and uncheck auto-update.
 
 ## Structure 🗃️
 

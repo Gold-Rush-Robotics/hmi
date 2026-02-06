@@ -1,10 +1,10 @@
 import { Box, Stack } from "@mui/material";
 
-type PageDots = {
+interface PageDots {
   steps: number;
   index: number;
   navigateFn?: (index: number) => void;
-};
+}
 
 /**
  * Renders a pagination of dots, with a callback function to navigate to the clicked dot.

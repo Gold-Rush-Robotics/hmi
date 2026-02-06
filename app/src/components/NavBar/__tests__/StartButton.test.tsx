@@ -25,7 +25,7 @@ describe("StartButton", () => {
       service_servers: [],
     },
   };
-  const mockNodes = {
+  const _mockNodes = {
     topic: "/node_info_publisher",
     msg: {
       data: JSON.stringify(mockNodeMsgData),

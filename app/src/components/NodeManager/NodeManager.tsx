@@ -1,5 +1,6 @@
 import { Stack, Typography } from "@mui/material";
-import { ReactElement, useContext } from "react";
+import { useContext } from "react";
+import type { ReactElement } from "react";
 import type { NodeManager } from "../../types/nodeManager";
 import { DiscoveredNodesContext } from "../Providers/ROSProvider";
 import NodeItem from "./NodeItem";
@@ -14,7 +15,7 @@ import NodeItem from "./NodeItem";
 function NodeManager({ ...props }: NodeManager) {
   const nodeData = useContext(DiscoveredNodesContext);
 
-  let nodeList: ReactElement[] = [];
+  const nodeList: ReactElement[] = [];
   for (const node in nodeData) {
     nodeList.push(
       <NodeItem

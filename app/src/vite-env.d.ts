@@ -1,6 +1,6 @@
 /// <reference types="vite/client" />
 
 declare module "*.yaml" {
-  const data: any; // You can use 'any' for simplicity, but typing it is better
+  const data: unknown; // Temporary until this feature is complete
   export default data;
 }

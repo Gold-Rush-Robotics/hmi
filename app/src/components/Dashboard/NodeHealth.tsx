@@ -18,7 +18,7 @@ function NodeHealth() {
   const [_, setUpdate] = useState({}); // dummy state to force update
   const now = new Date();
 
-  let nodeHealthData = {
+  const nodeHealthData = {
     discovered: 0,
     running: 0,
     stopped: 0,
@@ -78,7 +78,7 @@ function NodeHealth() {
         clearInterval(intervalId);
       }
     };
-  }, [nodeHistory]);
+  }, [nodeHistory, mps]);
 
   return (
     <DashboardCard title="Node Health">

@@ -16,10 +16,10 @@ import {
 interface TaskHistoryDialogProps {
   open: boolean;
   onClose: () => void;
-  statusHistory: Array<{
+  statusHistory: {
     extendedStatus?: string;
     timestamp: Date;
-  }>;
+  }[];
 }
 
 function TaskHistoryDialog({

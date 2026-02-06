@@ -1,5 +1,3 @@
-export type Dashboard = {};
-
-export type RunningTimeClock = {
+export interface RunningTimeClock {
   timestamp: Date;
-};
+}

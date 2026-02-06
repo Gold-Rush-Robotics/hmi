@@ -1,4 +1,4 @@
-import { SxProps } from "@mui/material";
+import type { SxProps } from "@mui/material";
 
 export enum Status {
   OK = "OK",
@@ -20,7 +20,7 @@ export const StatusColors: Record<Status, string> = {
   [Status.Critical]: "#FF00BB",
 };
 
-export type StatusIcon = {
+export interface StatusIcon {
   status: Status;
   sx?: SxProps;
-};
+}

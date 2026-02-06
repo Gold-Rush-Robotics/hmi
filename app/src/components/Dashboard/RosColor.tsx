@@ -1,5 +1,5 @@
 import { Box, Typography } from "@mui/material";
-import { RosDashboardColor } from "../../types/rosProvider";
+import type { RosDashboardColor } from "../../types/rosProvider";
 import DashboardCard from "./DashboardCard";
 
 function RosColor({ title, content, color }: RosDashboardColor) {
