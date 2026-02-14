@@ -18,6 +18,7 @@ describe("NodeItem", () => {
         selection={null}
         name={"My Node"}
         status={Status.OK}
+        collapsed={false}
       />,
     );
     expect(await screen.findByText("My Node")).toBeInTheDocument();
@@ -32,6 +33,7 @@ describe("NodeItem", () => {
         selection={null}
         name={"My Node"}
         status={Status.OK}
+        collapsed={false}
       />,
     );
     await userEvent.click(screen.getByText("My Node"));
@@ -46,6 +48,7 @@ describe("NodeItem", () => {
         selection={"My Node"}
         name={"My Node"}
         status={Status.OK}
+        collapsed={false}
       />,
     );
     const component = screen.getByText("My Node");
@@ -60,6 +63,7 @@ describe("NodeItem", () => {
         selection={"Another Node"}
         name={"My Node"}
         status={Status.OK}
+        collapsed={false}
       />,
     );
     const component = screen.getByText("My Node");
@@ -74,6 +78,7 @@ describe("NodeItem", () => {
         selection={null}
         name={"My Node"}
         status={Status.OK}
+        collapsed={false}
       />,
     );
     const component = screen.getByText("My Node");

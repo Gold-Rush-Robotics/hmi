@@ -18,6 +18,7 @@ interface DashboardCardAction {
  *
  * @param props.title - The title for the card
  * @param props.children - The content to display in the card
+ * @param props.action - Optional action button config (label + onClick)
  */
 function DashboardCard({ title, children, action }: DashboardCardProps) {
   const paperContent = (

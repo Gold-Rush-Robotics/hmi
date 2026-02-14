@@ -7,6 +7,7 @@ import type { ConsoleFilters } from "../../types/console";
  * ConsoleFilters component for displaying and managing topic filters.
  *
  * @param props.topicMap - A map of topics and their enabled/disabled state.
+ * @param props.disabledTopics - List of topic names that are currently disabled.
  * @param props.setDisabledTopics - Function to set the disabled topics.
  */
 function ConsoleFilters({ ...props }: ConsoleFilters) {

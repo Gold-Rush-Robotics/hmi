@@ -1,7 +1,16 @@
 import { ChevronRightRounded } from "@mui/icons-material";
-import { Box, Button, Stack, Typography } from "@mui/material";
 import type { SxProps } from "@mui/material";
+import {
+  Box,
+  Button,
+  IconButton,
+  Stack,
+  Tooltip,
+  Typography,
+  useTheme,
+} from "@mui/material";
 import type { NodeItem } from "../../types/nodeManager";
+import { requiresAttention } from "../../util/status";
 import StatusIcon from "../StatusIcon";
 
 /**
@@ -11,8 +20,11 @@ import StatusIcon from "../StatusIcon";
  * @param props.status The status of the node.
  * @param props.selection The currently selected node name.
  * @param props.setSelectedNode Function to set the selected node.
+ * @param props.collapsed Whether the sidebar is collapsed (shows minimized version).
  */
 function NodeItem({ ...props }: NodeItem) {
+  const theme = useTheme();
+
   const selected = props.selection === props.name;
   let selectedStatusBorder: SxProps = {};
   if (selected) {
@@ -23,6 +35,45 @@ function NodeItem({ ...props }: NodeItem) {
     };
   }
 
+  let attentionColor: string | undefined;
+  let attentionColorHover: string | undefined;
+  if (requiresAttention(props.status)) {
+    attentionColor = theme.palette.error.light;
+    attentionColorHover = "#ff8888";
+  }
+
+  if (props.collapsed) {
+    return (
+      <Tooltip title={props.name} placement="right">
+        <IconButton
+          onClick={() => props.setSelectedNode(props.name)}
+          sx={{
+            width: "100%",
+            borderRadius: 25,
+            border: "1px solid",
+            borderColor:
+              attentionColor ?? (selected ? "primary.main" : "divider"),
+            bgcolor: selected
+              ? (attentionColor ?? "primary.main")
+              : "background.paper",
+            color: selected ? "primary.contrastText" : "text.primary",
+            "&:hover": {
+              bgcolor: selected
+                ? (attentionColorHover ?? "primary.dark")
+                : "action.hover",
+              borderColor: attentionColor ?? "primary.main",
+            },
+          }}
+        >
+          <StatusIcon
+            status={props.status}
+            sx={{ ml: "auto", mr: "auto", ...selectedStatusBorder }}
+          />
+        </IconButton>
+      </Tooltip>
+    );
+  }
+
   return (
     <Button
       onClick={() => props.setSelectedNode(props.name)}
@@ -30,13 +81,17 @@ function NodeItem({ ...props }: NodeItem) {
         width: "100%",
         borderRadius: 25,
         border: "1px solid",
-        borderColor: selected ? "primary.main" : "divider",
-        bgcolor: selected ? "primary.main" : "background.paper",
+        borderColor: attentionColor ?? (selected ? "primary.main" : "divider"),
+        bgcolor: selected
+          ? (attentionColor ?? "primary.main")
+          : "background.paper",
         color: selected ? "primary.contrastText" : "text.primary",
         textTransform: "none", // Prevents text from being transformed to uppercase
         "&:hover": {
-          bgcolor: selected ? "primary.dark" : "action.hover",
-          borderColor: "primary.main",
+          bgcolor: selected
+            ? (attentionColorHover ?? "primary.dark")
+            : "action.hover",
+          borderColor: attentionColor ?? "primary.main",
         },
       }}
     >

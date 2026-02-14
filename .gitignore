@@ -31,6 +31,9 @@ dist-ssr
 # Vite
 .vite
 
+# TypeScript incremental build cache
+*.tsbuildinfo
+
 # Colcon 
 log/
 build/

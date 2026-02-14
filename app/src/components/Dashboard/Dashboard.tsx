@@ -7,8 +7,8 @@ import {
   Stack,
   Typography,
 } from "@mui/material";
-import { useContext, useState } from "react";
 import type { ReactNode } from "react";
+import { useContext, useState } from "react";
 import EStop from "../NavBar/EStop";
 import { ROSDashboardDataContext } from "../Providers/ROSProvider";
 import CurrentTask from "./CurrentTask";
@@ -162,7 +162,8 @@ function Dashboard() {
         height: "inherit",
         display: "flex",
         flexDirection: "column",
-        borderRadius: "12px 0 0 0",
+        borderRadius: 4,
+        borderColor: "background.default",
         bgcolor: "background.paper",
       }}
     >

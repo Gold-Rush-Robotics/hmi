@@ -11,7 +11,7 @@ import { ROSCommunicationContext } from "../Providers/ROSProvider";
  * Sends a message to ROS when clicked if the robot is not already in a running state.
  *
  * @param props.status The current status of the robot.
- * @param props.setStatus A function to update the state if the status.
+ * @param props.setStatus A function to update the state when the status changes.
  */
 function StartButton({ ...props }: StartButton) {
   const send = useContext(ROSCommunicationContext);

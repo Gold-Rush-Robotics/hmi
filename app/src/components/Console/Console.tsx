@@ -116,7 +116,7 @@ function Console({ ...props }: Console) {
         height: "inherit",
         display: "flex",
         flexDirection: "column",
-        borderRadius: "12px 0 0 0",
+        borderRadius: 4,
       }}
     >
       <Box sx={{ px: 1.5, py: 1 }}>
@@ -170,6 +170,7 @@ function Console({ ...props }: Console) {
           flexGrow: 1,
           m: 1,
           p: 1.5,
+          borderRadius: 3.25,
         }}
       >
         <pre

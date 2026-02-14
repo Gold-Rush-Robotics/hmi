@@ -9,9 +9,9 @@ interface PageDots {
 /**
  * Renders a pagination of dots, with a callback function to navigate to the clicked dot.
  *
- * @param steps - The number of steps to display
- * @param index - The current index
- * @param navigateFn - The function to navigate to the clicked dot
+ * @param steps The number of steps to display
+ * @param index The current index
+ * @param navigateFn Optional. The function to navigate to the clicked dot.
  * @returns The rendered PageDots component
  */
 function PageDots({ steps, index, navigateFn }: PageDots) {
