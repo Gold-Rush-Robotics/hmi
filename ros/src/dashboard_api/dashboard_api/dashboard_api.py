@@ -1,43 +1,67 @@
 from json import dumps
 from rclpy.node import Node
-from dashboard_interface.msg import Dashboard
+from std_msgs.msg import String
 
 class DashboardApi():
-    def __init__(self, node: Node, _id: int) -> None:
+    def __init__(self, node: Node) -> None:
         self.node = node
-        self.id = _id
-        self.publisher = node.create_publisher(Dashboard, "hmi_dashboard_data", 10)
+        self.publisher = node.create_publisher(String, "hmi_dashboard_data", 10)
 
-    def _publish_dashboard(self, msg: Dashboard) -> None:
+    def _publish_dashboard(self, msg: String) -> None:
         self.publisher.publish(msg)
-        self.node.get_logger().info(f"Published {msg.id} of type {msg.type}: {msg.data}")
+        self.node.get_logger().info(f"Published: {msg.data}")
 
-    def _make_msg(self, screen: str, _type: str, data: dict) -> Dashboard:
-        msg = Dashboard()
-        msg.id = self.id
-        msg.screen = screen
-        msg.type = _type
+    def _make_msg(self, _id: str, screen: str, _type: str, data: dict) -> String:
+        msg = String()
+        data = {
+            "id": _id,
+            "screen": screen,
+            "type": _type,
+            "data": data
+        }
         msg.data = dumps(data)
         return msg
 
-    def card(self, screen: str, title: str, content: str) -> None:
+    def card(
+        self,
+        _id: str,
+        screen: str,
+        title: str,
+        content: str=None
+    ) -> None:
         data = {
             "title": title,
             "content": content
         }
-        msg = self._make_msg(screen, "card", data)
+        msg = self._make_msg(_id, screen, "card", data)
         self._publish_dashboard(msg)
 
-    def color(self, screen: str, title: str, content: str, color: str) -> None:
+    def color(
+        self,
+        _id: str,
+        screen: str,
+        title: str,
+        color: str,
+        content: str=None
+    ) -> None:
         data = {
             "title": title,
             "content": content,
             "color": color
         }
-        msg = self._make_msg(screen, "color", data)
+        msg = self._make_msg(_id, screen, "color", data)
         self._publish_dashboard(msg)
     
-    def bar(self, screen: str, title: str, content: str, value: int, min_value: int=0, max_value: int=1) -> None:
+    def bar(
+        self,
+        _id: str,
+        screen: str,
+        title: str,
+        value: int,
+        content: str=None,
+        min_value: int=0,
+        max_value: int=1
+    ) -> None:
         data = {
             "title": title,
             "content": content,
@@ -45,16 +69,16 @@ class DashboardApi():
             "min": min_value,
             "max": max_value
         }
-        msg = self._make_msg(screen, "bar", data)
+        msg = self._make_msg(_id, screen, "bar", data)
         self._publish_dashboard(msg)
 
 _dashboard: DashboardApi | None = None
 
-def init(node: Node, _id: int=0) -> None:
+def init(node: Node) -> None:
     global _dashboard
     if _dashboard is not None:
         raise RuntimeError("Dashboard already initialized")
-    _dashboard = DashboardApi(node, _id)
+    _dashboard = DashboardApi(node)
 
 
 def get() -> DashboardApi:
@@ -63,13 +87,32 @@ def get() -> DashboardApi:
     return _dashboard
 
 
-def card(screen: str, title: str, content: str) -> None:
-    get().card(screen, title, content)
+def card(
+    _id: str, 
+    screen: str, 
+    title: str, 
+    content: str=None
+) -> None:
+    get().card(_id=_id, screen=screen, title=title, content=content)
 
 
-def color(screen: str, title: str, content: str, color: str):
-    get().color(screen, title, content, color)
+def color(
+    _id: str,
+    screen: str,
+    title: str,
+    color: str,
+    content: str=None
+) -> None:
+    get().color(_id=_id, screen=screen, title=title, content=content, color=color)
 
 
-def bar(screen: str, title: str, content: str, value: int, min_value: int=0, max_value: int=1) -> None:
-    get().bar(screen, title, content, value, min_value, max_value)
+def bar(
+    _id: str,
+    screen: str,
+    title: str,
+    value: int,
+    content: str=None,
+    min_value: int=0,
+    max_value: int=1
+) -> None:
+    get().bar(_id=_id, screen=screen, title=title, content=content, value=value, min_value=min_value, max_value=max_value)
