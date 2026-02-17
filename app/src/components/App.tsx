@@ -1,5 +1,5 @@
 import { Box } from "@mui/material";
-import { useContext, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { Status } from "../types/status";
 import Console from "./Console/Console";
 import Dashboard from "./Dashboard/Dashboard";
@@ -15,9 +15,31 @@ const SIDEBAR_WIDTH_COLLAPSED = 60; // enough for expand/collapse tab
  */
 function App() {
   const [selectedNode, setSelectedNode] = useState<string | null>(null);
-  const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
+  const [sidebarCollapsed, setSidebarCollapsed] = useState(() => {
+    // Attempt to load initial state from localStorage
+    if (typeof window === "undefined") return false;
+    try {
+      const stored = window.localStorage.getItem("sidebarCollapsed");
+      return stored === "true";
+    } catch {
+      return false;
+    }
+  });
   const { globalStatusHistory, setGlobalStatusHistory } =
     useContext(GlobalStatusContext);
+
+  // Save sidebar collapsed state to localStorage
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    try {
+      window.localStorage.setItem(
+        "sidebarCollapsed",
+        sidebarCollapsed ? "true" : "false",
+      );
+    } catch {
+      // ignore storage errors
+    }
+  }, [sidebarCollapsed]);
 
   const mainSection =
     selectedNode == null ? (
