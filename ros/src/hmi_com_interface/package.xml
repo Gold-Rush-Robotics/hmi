@@ -4,7 +4,7 @@
   <name>hmi_com_interface</name>
   <version>0.0.0</version>
   <description>This ROS interface provides a service that is used in the hmi_com package to allow the request of information about active nodes.</description>
-  <maintainer email="goldrushrobotics@gmail.com">GoldRushRobotics</maintainer>
+  <maintainer email="goldrushrobotics@charlotte.edu">GoldRushRobotics</maintainer>
   <license>MIT</license>
 
   <buildtool_depend>ament_cmake</buildtool_depend>
