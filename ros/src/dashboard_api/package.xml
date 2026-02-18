@@ -3,8 +3,8 @@
 <package format="3">
   <name>dashboard_api</name>
   <version>0.0.0</version>
-  <description>TODO: Package description</description>
-  <maintainer email="goldrushrobotics@gmail.com">GoldRushRobotics</maintainer>
+  <description>A ROS 2 API for publishing structured dashboard data as JSON to a web-based HMI, allowing nodes to send cards, bars, and color indicators.</description>
+  <maintainer email="goldrushrobotics@charlotte.edu">GoldRushRobotics</maintainer>
   <license>MIT</license>
 
   <exec_depend>rclpy</exec_depend>

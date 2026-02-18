@@ -14,8 +14,8 @@ setup(
     install_requires=['setuptools'],
     zip_safe=True,
     maintainer='GoldRushRobotics',
-    maintainer_email='goldrushrobotics@gmail.com',
-    description='TODO: Package description',
+    maintainer_email='goldrushrobotics@charlotte.edu',
+    description='A ROS 2 API for publishing structured dashboard data as JSON to a web-based HMI, allowing nodes to send cards, bars, and color indicators.',
     license='MIT',
     entry_points={
         'console_scripts': [],
